@@ -9,6 +9,8 @@ This repository contains example projects to interact with https://github.com/to
 
 === example-model
 In this library project the data model used by all examples is defined.
+Movie and Director are the JPA Entities, also Spring Data repositories are defined
+and filled with 250 sample movies.
 
 === example-basic
 Basic usage of the representation models provided by Spring HATEOAS.
