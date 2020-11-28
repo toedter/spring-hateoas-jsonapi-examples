@@ -25,7 +25,7 @@ Advanced usage of JSON:API specific features like relationships, included resour
 * Clone this Git repository and cd into `spring-hateoas-jsonapi`
 * cd to the example directory
 * Invoke `../gradlew bootrun` (`..\gradlew` on Windows)
-* Open link:++http://localhost:8080/api/movies
+* Open http://localhost:8080/api/movies
 
 == License
 
