@@ -1,0 +1,29 @@
+plugins {
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id 'io.freefair.lombok' version '5.2.1'
+    id 'java-library'
+}
+
+group = 'com.toedter'
+sourceCompatibility = '1.8'
+
+repositories {
+    mavenCentral()
+}
+
+dependencyManagement {
+    dependencies {
+        imports {
+            mavenBom 'com.fasterxml.jackson:jackson-bom:2.11.3'
+        }
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.data:spring-data-jpa:2.4.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'javax.persistence:javax.persistence-api:2.2'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}

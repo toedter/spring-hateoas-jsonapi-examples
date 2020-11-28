@@ -1,1 +1,0 @@
-# spring-hateoas-jsonapi-examples

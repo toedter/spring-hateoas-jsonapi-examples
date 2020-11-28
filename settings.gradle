@@ -1,0 +1,3 @@
+rootProject.name = 'spring-hateoas-jsonapi-examples'
+
+include  'example-model','example-basic','example-advanced'
