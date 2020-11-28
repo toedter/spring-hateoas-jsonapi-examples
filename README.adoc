@@ -16,7 +16,7 @@ and filled with 250 sample movies.
 Basic usage of the representation models provided by Spring HATEOAS.
 No JSON:API specific features are used, but the resulting JSON is rendered as JSON:API.
 
-=== example-advances
+=== example-advanced
 Advanced usage of JSON:API specific features like relationships, included resources and sparse fieldsets.
 
 == Running the Examples
