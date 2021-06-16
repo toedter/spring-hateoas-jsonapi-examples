@@ -115,21 +115,21 @@ public class MovieController {
 
     @PostMapping("/movies")
     public ResponseEntity<?> newMovie(@RequestBody Movie movie) {
-        repository.save(movie);
-        final RepresentationModel<?> movieRepresentationModel = movieModelAssembler.toJsonApiModel(movie, null);
+        Movie savedMovie = repository.save(movie);
+        final RepresentationModel<?> movieRepresentationModel = movieModelAssembler.toJsonApiModel(savedMovie, null);
 
         return movieRepresentationModel
-                .getLink(IanaLinkRelations.SELF)
-                .map(Link::getHref)
-                .map(href -> {
-                    try {
-                        return new URI(href);
-                    } catch (URISyntaxException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .map(uri -> ResponseEntity.created(uri).build())
-                .orElse(ResponseEntity.badRequest().body("Unable to create " + movie));
+            .getLink(IanaLinkRelations.SELF)
+            .map(Link::getHref)
+            .map(href -> {
+                try {
+                    return new URI(href);
+                } catch (URISyntaxException e) {
+                    throw new RuntimeException(e);
+                }
+            })
+            .map(uri -> ResponseEntity.created(uri).body(movieRepresentationModel))
+            .orElseThrow(IllegalStateException::new);
     }
 
     @GetMapping("/movies/{id}")
