@@ -14,16 +14,16 @@ repositories {
 dependencyManagement {
     dependencies {
         imports {
-            mavenBom 'com.fasterxml.jackson:jackson-bom:2.11.3'
+            mavenBom 'com.fasterxml.jackson:jackson-bom:2.12.5'
         }
     }
 }
 
 dependencies {
-    implementation 'org.springframework.data:spring-data-jpa:2.4.1'
+    implementation 'org.springframework.data:spring-data-jpa:2.5.6'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation 'javax.persistence:javax.persistence-api:2.2'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
