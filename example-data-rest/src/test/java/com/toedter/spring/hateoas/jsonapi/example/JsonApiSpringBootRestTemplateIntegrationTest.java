@@ -20,11 +20,7 @@ import com.toedter.spring.hateoas.jsonapi.MediaTypes;
 import com.toedter.spring.hateoas.jsonapi.example.director.DirectorRepository;
 import com.toedter.spring.hateoas.jsonapi.example.movie.Movie;
 import com.toedter.spring.hateoas.jsonapi.example.movie.MovieRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -81,6 +77,44 @@ public class JsonApiSpringBootRestTemplateIntegrationTest {
                         + "\",\"type\":\"movies\",\"attributes\":{\"title\":\"Test Movie\",\"year\":2020,\"imdbId\":\"12345\",\"rating\":9.3,\"rank\":17}}"
                         + ",\"links\":{\"self\":\"http://localhost:" + this.randomPort + "/api/movies/427\","
                         + "\"movie\":\"http://localhost:" + this.randomPort + "/api/movies/427\"}}";
+
+        assertThat(response.getBody()).isEqualTo(expectedResult);
+    }
+
+    @Test
+    @Disabled
+    void should_create_single_movie() {
+        Movie movie = new Movie("12345", "Test Movie", 2020, 9.3, 17, null);
+        final Movie savedMovie = movieRepository.save(movie);
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", MediaTypes.JSON_API_VALUE);
+        headers.set("Accept", MediaTypes.JSON_API_VALUE);
+
+        String movieJson = "{\n" +
+                "\t\"data\": {\n" +
+                "\t\t\"type\": \"movies\",\n" +
+                "\t\t\"attributes\": {\n" +
+                "\t\t\t\"title\": \"Test Movie\",\n" +
+                "\t\t\t\"year\": 2021,\n" +
+                "\t\t\t\"imdbId\": \"imdb\",\n" +
+                "\t\t\t\"rating\": 6.5,\n" +
+                "\t\t\t\"rank\": 5\n" +
+                "\t\t}\n" +
+                "\t}\n" +
+                "}";
+
+        final HttpEntity<String> entity = new HttpEntity<>(movieJson, headers);
+
+        ResponseEntity<String> response =
+                restTemplate.postForEntity("/api/movies", entity, String.class);
+
+        String expectedResult =
+                "{\"data\":{\"id\":\""
+                        + 428
+                        + "\",\"type\":\"movies\",\"attributes\":{\"title\":\"Test Movie\",\"year\":2020,\"imdbId\":\"12345\",\"rating\":9.3,\"rank\":17}}"
+                        + ",\"links\":{\"self\":\"http://localhost:" + this.randomPort + "/api/movies/428\","
+                        + "\"movie\":\"http://localhost:" + this.randomPort + "/api/movies/428\"}}";
 
         assertThat(response.getBody()).isEqualTo(expectedResult);
     }
