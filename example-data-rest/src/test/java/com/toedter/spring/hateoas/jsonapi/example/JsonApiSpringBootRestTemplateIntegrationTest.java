@@ -75,8 +75,8 @@ public class JsonApiSpringBootRestTemplateIntegrationTest {
                 "{\"data\":{\"id\":\""
                         + savedMovie.getId()
                         + "\",\"type\":\"movies\",\"attributes\":{\"title\":\"Test Movie\",\"year\":2020,\"imdbId\":\"12345\",\"rating\":9.3,\"rank\":17}}"
-                        + ",\"links\":{\"self\":\"http://localhost:" + this.randomPort + "/api/movies/427\","
-                        + "\"movie\":\"http://localhost:" + this.randomPort + "/api/movies/427\"}}";
+                        + ",\"links\":{\"self\":\"http://localhost:" + this.randomPort + "/api/movies/" + savedMovie.getId() + "\","
+                        + "\"movie\":\"http://localhost:" + this.randomPort + "/api/movies/" + savedMovie.getId() + "\"}}";
 
         assertThat(response.getBody()).isEqualTo(expectedResult);
     }
@@ -85,7 +85,6 @@ public class JsonApiSpringBootRestTemplateIntegrationTest {
     @Disabled
     void should_create_single_movie() {
         Movie movie = new Movie("12345", "Test Movie", 2020, 9.3, 17, null);
-        final Movie savedMovie = movieRepository.save(movie);
 
         final HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", MediaTypes.JSON_API_VALUE);
@@ -109,12 +108,14 @@ public class JsonApiSpringBootRestTemplateIntegrationTest {
         ResponseEntity<String> response =
                 restTemplate.postForEntity("/api/movies", entity, String.class);
 
+        String location = response.getHeaders().get("location").get(0);
+        String id = location.substring(location.lastIndexOf("/") + 1);
         String expectedResult =
                 "{\"data\":{\"id\":\""
-                        + 428
+                        + id
                         + "\",\"type\":\"movies\",\"attributes\":{\"title\":\"Test Movie\",\"year\":2020,\"imdbId\":\"12345\",\"rating\":9.3,\"rank\":17}}"
-                        + ",\"links\":{\"self\":\"http://localhost:" + this.randomPort + "/api/movies/428\","
-                        + "\"movie\":\"http://localhost:" + this.randomPort + "/api/movies/428\"}}";
+                        + ",\"links\":{\"self\":\"http://localhost:" + this.randomPort + "/api/movies/" + id + "\","
+                        + "\"movie\":\"http://localhost:" + this.randomPort + "/api/movies/" + id + "\"}}";
 
         assertThat(response.getBody()).isEqualTo(expectedResult);
     }
