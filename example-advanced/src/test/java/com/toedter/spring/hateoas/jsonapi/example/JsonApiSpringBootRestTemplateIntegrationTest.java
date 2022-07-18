@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -42,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @DisplayName("Spring Boot Integration Test with RestTemplate")
-public class JsonApiSpringBootRestTemplateIntegrationTest {
+class JsonApiSpringBootRestTemplateIntegrationTest {
 
     @LocalServerPort
     private int randomPort;
@@ -81,12 +81,12 @@ public class JsonApiSpringBootRestTemplateIntegrationTest {
                         + "\",\"type\":\"movies\",\"attributes\":{\"title\":\"Test Movie\",\"year\":2020,\"rating\":9.3}"
                         + ",\"relationships\":{\"directors\":{\"data\":[],\"links\":{\"self\":\"http://localhost:"
                         + this.randomPort
-                        + "/api/movies/427/relationships/directors\",\"related\":\"http://localhost:"
+                        + "/api/movies/426/relationships/directors\",\"related\":\"http://localhost:"
                         + this.randomPort
-                        + "/api/movies/427/directors\"}}}}"
+                        + "/api/movies/426/directors\"}}}}"
                         + ",\"links\":{\"self\":\"http://localhost:"
                         + this.randomPort
-                        + "/api/movies/427\"}}";
+                        + "/api/movies/426\"}}";
 
         assertThat(response.getBody()).isEqualTo(expectedResult);
     }

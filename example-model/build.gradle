@@ -1,7 +1,10 @@
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
 plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'io.freefair.lombok' version '5.2.1'
+    id 'io.freefair.lombok' version '6.5.0.3'
     id 'java-library'
+    id 'org.springframework.boot' version '2.7.1' apply false
 }
 
 group = 'com.toedter'
@@ -14,16 +17,16 @@ repositories {
 dependencyManagement {
     dependencies {
         imports {
-            mavenBom 'com.fasterxml.jackson:jackson-bom:2.12.5'
+            mavenBom SpringBootPlugin.BOM_COORDINATES
         }
     }
 }
 
 dependencies {
-    implementation 'org.springframework.data:spring-data-jpa:2.5.6'
+    implementation 'org.springframework.data:spring-data-jpa'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
-    implementation 'javax.persistence:javax.persistence-api:2.2'
+    implementation 'javax.persistence:javax.persistence-api'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
