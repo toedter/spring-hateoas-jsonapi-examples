@@ -3,6 +3,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
     id 'io.freefair.lombok' version '6.5.0.3'
+    id 'com.epages.restdocs-api-spec' version '0.16.2'
 }
 
 group = 'com.toedter'
@@ -18,13 +19,12 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-hateoas'
     implementation 'com.toedter:spring-hateoas-jsonapi:1.5.1'
 
     implementation project(':example-model')
+    implementation project(':example-advanced')
 
+    testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.16.2'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
@@ -37,5 +37,15 @@ test {
 }
 
 bootJar {
-    archivesBaseName = "spring-hateoas-jsonapi-example-advance"
+    mainClass = "com.toedter.spring.hateoas.jsonapi.example.MoviesDemoApplication"
+    archivesBaseName = "spring-hateoas-jsonapi-example-restdocs"
+}
+
+openapi3 {
+    server = 'https://localhost:8080/api'
+    title = 'The Movie API'
+    description = 'This is an example API for demonstrating JSON:API.'
+//    tagDescriptionsPropertiesFile = 'src/docs/tag-descriptions.yaml'
+    version = '1.0.0'
+    format = 'yaml'
 }
