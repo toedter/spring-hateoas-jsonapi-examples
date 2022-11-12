@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '2.7.3'
+    id 'org.springframework.boot' version '2.7.5'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
     id 'io.freefair.lombok' version '6.5.0.3'
@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.toedter:spring-hateoas-jsonapi:1.5.1'
+    implementation 'com.toedter:spring-hateoas-jsonapi:1.6.0'
 
     implementation project(':example-model')
     implementation project(':example-advanced')
