@@ -20,11 +20,16 @@ import com.toedter.spring.hateoas.jsonapi.MediaTypes;
 import com.toedter.spring.hateoas.jsonapi.example.director.DirectorRepository;
 import com.toedter.spring.hateoas.jsonapi.example.movie.Movie;
 import com.toedter.spring.hateoas.jsonapi.example.movie.MovieRepository;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -75,8 +80,8 @@ public class JsonApiSpringBootRestTemplateIntegrationTest {
                 "{\"data\":{\"id\":\""
                         + savedMovie.getId()
                         + "\",\"type\":\"movies\",\"attributes\":{\"title\":\"Test Movie\",\"year\":2020,\"imdbId\":\"12345\",\"rating\":9.3,\"rank\":17}}"
-                        + ",\"links\":{\"self\":\"http://localhost:" + this.randomPort + "/api/movies/" + savedMovie.getId() + "\","
-                        + "\"movie\":\"http://localhost:" + this.randomPort + "/api/movies/" + savedMovie.getId() + "\"}}";
+                        + ",\"links\":{\"self\":\"http://localhost:" + this.randomPort + "/api/movies/" + savedMovie.getId() + "\""
+                        + "}}";
 
         assertThat(response.getBody()).isEqualTo(expectedResult);
     }

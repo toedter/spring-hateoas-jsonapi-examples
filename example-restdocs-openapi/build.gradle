@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '2.7.5'
+    id 'org.springframework.boot' version '3.0.0'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
     id 'io.freefair.lombok' version '6.5.0.3'
@@ -7,8 +7,8 @@ plugins {
 }
 
 group = 'com.toedter'
-version = '1.1.2-SNAPSHOT'
-sourceCompatibility = '1.8'
+version = '2.0.0'
+sourceCompatibility = '1.17'
 
 repositories {
     mavenCentral()
@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.toedter:spring-hateoas-jsonapi:1.6.0'
+    implementation 'com.toedter:spring-hateoas-jsonapi:2.0.0'
 
     implementation project(':example-model')
     implementation project(':example-advanced')

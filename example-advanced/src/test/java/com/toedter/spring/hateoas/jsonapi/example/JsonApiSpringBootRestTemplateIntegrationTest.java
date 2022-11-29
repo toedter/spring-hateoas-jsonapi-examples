@@ -73,20 +73,21 @@ class JsonApiSpringBootRestTemplateIntegrationTest {
         final HttpEntity<String> entity = new HttpEntity<>(headers);
 
         ResponseEntity<String> response =
-                restTemplate.exchange("/api/movies/" + savedMovie.getId() + "?fields[movies]=title,year,rating,directors", HttpMethod.GET, entity, String.class);
+                restTemplate.exchange("/api/movies/" + savedMovie.getId()
+                        + "?fields[movies]=title,year,rating,directors", HttpMethod.GET, entity, String.class);
 
         String expectedResult =
-                "{\"jsonapi\":{\"version\":\"1.0\"},\"data\":{\"id\":\""
+                "{\"jsonapi\":{\"version\":\"1.1\"},\"data\":{\"id\":\""
                         + savedMovie.getId()
                         + "\",\"type\":\"movies\",\"attributes\":{\"title\":\"Test Movie\",\"year\":2020,\"rating\":9.3}"
                         + ",\"relationships\":{\"directors\":{\"data\":[],\"links\":{\"self\":\"http://localhost:"
                         + this.randomPort
-                        + "/api/movies/426/relationships/directors\",\"related\":\"http://localhost:"
+                        + "/api/movies/" + savedMovie.getId() + "/relationships/directors\",\"related\":\"http://localhost:"
                         + this.randomPort
-                        + "/api/movies/426/directors\"}}}}"
+                        + "/api/movies/" + savedMovie.getId() + "/directors\"}}}}"
                         + ",\"links\":{\"self\":\"http://localhost:"
                         + this.randomPort
-                        + "/api/movies/426\"}}";
+                        + "/api/movies/" + savedMovie.getId() + "\"}}";
 
         assertThat(response.getBody()).isEqualTo(expectedResult);
     }

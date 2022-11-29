@@ -21,6 +21,9 @@ No JSON:API specific features are used, but the resulting JSON is rendered as JS
 Advanced usage of JSON:API specific features like relationships, included resources and sparse fieldsets.
 
 === example-restdocs-openapi
+This example is currently not working because https://github.com/ePages-de/restdocs-api-spec[restdocs-api-spec]
+is not ported to Spring REST Docs 3.0.0 yet.
+
 This adds test to the example-advanced that produce an OpenAPI v3 specification.
 You can create the spec running `../gradlew openapi3`. You find the generated spec at
 `build/api-spec/openapi3.yaml`

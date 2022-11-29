@@ -4,11 +4,11 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'io.freefair.lombok' version '6.5.0.3'
     id 'java-library'
-    id 'org.springframework.boot' version '2.7.5' apply false
+    id 'org.springframework.boot' version '3.0.0' apply false
 }
 
 group = 'com.toedter'
-sourceCompatibility = '1.8'
+sourceCompatibility = '1.17'
 
 repositories {
     mavenCentral()
@@ -25,7 +25,7 @@ dependencyManagement {
 dependencies {
     implementation 'org.springframework.data:spring-data-jpa'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
-    implementation 'javax.persistence:javax.persistence-api'
+    implementation 'jakarta.persistence:jakarta.persistence-api'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'

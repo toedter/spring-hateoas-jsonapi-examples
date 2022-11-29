@@ -73,15 +73,17 @@ class JsonApiSpringBootRestTemplateIntegrationTest {
         final HttpEntity<String> entity = new HttpEntity<>(headers);
 
         ResponseEntity<String> response =
-                restTemplate.exchange("/api/movies/" + savedMovie.getId() + "?fields[movies]=title,year,rating,directors", HttpMethod.GET, entity, String.class);
+                restTemplate.exchange("/api/movies/" + savedMovie.getId()
+                        + "?fields[movies]=title,year,rating,directors", HttpMethod.GET, entity, String.class);
 
         String expectedResult =
-                "{\"jsonapi\":{\"version\":\"1.0\"},\"data\":{\"id\":\""
+                "{\"jsonapi\":{\"version\":\"1.1\"},\"data\":{\"id\":\""
                         + savedMovie.getId()
-                        + "\",\"type\":\"movies\",\"attributes\":{\"title\":\"Test Movie\",\"year\":2020,\"imdbId\":\"12345\",\"rating\":9.3,\"rank\":17}}"
+                        + "\",\"type\":\"movies\",\"attributes\":"
+                        + "{\"title\":\"Test Movie\",\"year\":2020,\"imdbId\":\"12345\",\"rating\":9.3,\"rank\":17}}"
                         + ",\"links\":{\"self\":\"http://localhost:"
                         + this.randomPort
-                        + "/api/movies/426\"}}";
+                        + "/api/movies/" + savedMovie.getId() + "\"}}";
 
         assertThat(response.getBody()).isEqualTo(expectedResult);
     }
