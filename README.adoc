@@ -30,7 +30,7 @@ You can create the spec running `../gradlew openapi3`. You find the generated sp
 
 == Running the Examples
 
-* Make sure Java 8 or later JDK is installed
+* Make sure Java 17 or later JDK is installed
 * Clone this Git repository and cd into `spring-hateoas-jsonapi`
 * cd to the one of the example directories
 * Invoke `../gradlew bootrun` (`..\gradlew` on Windows)
