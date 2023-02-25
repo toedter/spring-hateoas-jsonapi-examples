@@ -1,9 +1,9 @@
 plugins {
-    id 'org.springframework.boot' version '3.0.0'
+    id 'org.springframework.boot' version '3.0.3'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
     id 'io.freefair.lombok' version '6.5.0.3'
-    id 'com.epages.restdocs-api-spec' version '0.16.2'
+    id 'com.epages.restdocs-api-spec' version '0.17.1'
 }
 
 group = 'com.toedter'
@@ -19,12 +19,13 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.toedter:spring-hateoas-jsonapi:2.0.0'
+    implementation 'com.toedter:spring-hateoas-jsonapi:2.0.2'
 
     implementation project(':example-model')
     implementation project(':example-advanced')
 
-    testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.16.2'
+    testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.17.1'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:3.0.0'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
