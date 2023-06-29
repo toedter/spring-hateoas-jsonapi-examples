@@ -17,6 +17,7 @@
 package com.toedter.spring.hateoas.jsonapi.example;
 
 import com.toedter.spring.hateoas.jsonapi.JsonApiConfiguration;
+import com.toedter.spring.hateoas.jsonapi.JsonApiObject;
 import com.toedter.spring.hateoas.jsonapi.example.director.DirectorRepository;
 import com.toedter.spring.hateoas.jsonapi.example.movie.MovieLoader;
 import com.toedter.spring.hateoas.jsonapi.example.movie.MovieRepository;
@@ -39,6 +40,6 @@ public class MoviesDemoApplication implements WebMvcConfigurer {
     @Bean
     public JsonApiConfiguration jsonApiConfiguration() {
         return new JsonApiConfiguration()
-                .withJsonApiVersionRendered(true);
+                .withJsonApiObject(new JsonApiObject(true));
     }
 }
