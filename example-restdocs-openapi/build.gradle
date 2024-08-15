@@ -1,8 +1,8 @@
 plugins {
-    id 'org.springframework.boot' version '3.2.1'
+    id 'org.springframework.boot' version '3.3.2'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
-    id 'io.freefair.lombok' version '8.4'
+    id 'io.freefair.lombok' version '8.7.1'
     id 'com.epages.restdocs-api-spec' version '0.17.1'
 }
 
@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.toedter:spring-hateoas-jsonapi:2.0.7'
+    implementation 'com.toedter:spring-hateoas-jsonapi:2.1.0'
 
     implementation project(':example-model')
     implementation project(':example-advanced')
