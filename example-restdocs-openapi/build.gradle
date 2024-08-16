@@ -3,7 +3,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'java'
     id 'io.freefair.lombok' version '8.7.1'
-    id 'com.epages.restdocs-api-spec' version '0.17.1'
+    id 'com.epages.restdocs-api-spec' version '0.19.3'
 }
 
 group = 'com.toedter'
