@@ -89,14 +89,16 @@ class MovieRestDocsTest {
     @Test
     void should_create_movie() throws Exception {
         String body =
-                "{\n" +
-                        "  \"data\": {\n" +
-                        "    \"type\": \"movies\",\n" +
-                        "    \"attributes\": {\n" +
-                        "      \"title\": \"Batman Begins\"\n" +
-                        "    }\n" +
-                        "  }\n" +
-                        "}";
+                """
+                {
+                  "data": {
+                    "id": "1",
+                    "type": "movies",
+                    "attributes": {
+                      "title": "NEW MOVIE"
+                    }
+                  }
+                }""";
 
         resultActions = mockMvc.perform(post("/api/movies")
                 .contentType(JSON_API_VALUE)
@@ -116,15 +118,16 @@ class MovieRestDocsTest {
     @Test
     void should_update_movie() throws Exception {
         String body =
-                "{\n" +
-                        "  \"data\": {\n" +
-                        "    \"id\": \"1\",\n" +
-                        "    \"type\": \"movies\",\n" +
-                        "    \"attributes\": {\n" +
-                        "      \"title\": \"PATCHED TITLE\"\n" +
-                        "    }\n" +
-                        "  }\n" +
-                        "}";
+                """
+                {
+                  "data": {
+                    "id": "1",
+                    "type": "movies",
+                    "attributes": {
+                      "title": "PATCHED TITLE"
+                    }
+                  }
+                }""";
 
         resultActions = mockMvc.perform(patch("/api/movies/1")
                 .contentType(JSON_API_VALUE)

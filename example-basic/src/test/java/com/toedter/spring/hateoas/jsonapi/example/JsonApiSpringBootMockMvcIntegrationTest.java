@@ -27,14 +27,11 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
-import java.io.FileWriter;
 import java.util.Optional;
 
-import static com.jayway.jsonpath.internal.JsonFormatter.prettyPrint;
 import static com.toedter.spring.hateoas.jsonapi.MediaTypes.JSON_API;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -54,10 +51,10 @@ public class JsonApiSpringBootMockMvcIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private MovieRepository movieRepository;
 
-    @MockBean
+    @MockitoBean
     private DirectorRepository directorRepository;
 
     @Test

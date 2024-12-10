@@ -18,16 +18,10 @@ package com.toedter.spring.hateoas.jsonapi.example;
 
 import com.toedter.spring.hateoas.jsonapi.JsonApiConfiguration;
 import com.toedter.spring.hateoas.jsonapi.JsonApiObject;
-import com.toedter.spring.hateoas.jsonapi.example.director.DirectorRepository;
-import com.toedter.spring.hateoas.jsonapi.example.movie.MovieLoader;
-import com.toedter.spring.hateoas.jsonapi.example.movie.MovieRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import jakarta.annotation.PostConstruct;
 
 @SpringBootApplication
 public class MoviesDemoApplication implements WebMvcConfigurer {
