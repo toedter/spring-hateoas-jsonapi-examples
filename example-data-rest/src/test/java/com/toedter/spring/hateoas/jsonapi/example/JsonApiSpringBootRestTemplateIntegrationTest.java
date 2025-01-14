@@ -16,6 +16,8 @@
 
 package com.toedter.spring.hateoas.jsonapi.example;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.toedter.spring.hateoas.jsonapi.MediaTypes;
 import com.toedter.spring.hateoas.jsonapi.example.director.DirectorRepository;
 import com.toedter.spring.hateoas.jsonapi.example.movie.Movie;
@@ -35,8 +37,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 /**
  * @author Kai Toedter
  */
@@ -45,83 +45,105 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("Spring Boot Integration Test with RestTemplate")
 public class JsonApiSpringBootRestTemplateIntegrationTest {
 
-    @LocalServerPort
-    private int randomPort;
+  @LocalServerPort
+  private int randomPort;
 
-    @Autowired
-    private TestRestTemplate restTemplate;
+  @Autowired
+  private TestRestTemplate restTemplate;
 
-    @Autowired
-    private MovieRepository movieRepository;
+  @Autowired
+  private MovieRepository movieRepository;
 
-    @Autowired
-    private DirectorRepository directorRepository;
+  @Autowired
+  private DirectorRepository directorRepository;
 
-    @BeforeEach
-    void beforeEach() {
-        this.directorRepository.deleteAll();
-        this.movieRepository.deleteAll();
-    }
+  @BeforeEach
+  void beforeEach() {
+    this.directorRepository.deleteAll();
+    this.movieRepository.deleteAll();
+  }
 
-    @Test
-    void should_get_single_movie() {
-        Movie movie = new Movie("12345", "Test Movie", 2020, 9.3, 17, null);
-        final Movie savedMovie = movieRepository.save(movie);
+  @Test
+  void should_get_single_movie() {
+    Movie movie = new Movie("12345", "Test Movie", 2020, 9.3, 17, null);
+    final Movie savedMovie = movieRepository.save(movie);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.set("Accept", MediaTypes.JSON_API_VALUE);
+    final HttpHeaders headers = new HttpHeaders();
+    headers.set("Accept", MediaTypes.JSON_API_VALUE);
 
-        final HttpEntity<String> entity = new HttpEntity<>(headers);
+    final HttpEntity<String> entity = new HttpEntity<>(headers);
 
-        ResponseEntity<String> response =
-                restTemplate.exchange("/api/movies/" + savedMovie.getId() + "?fields[movies]=title,year,rating,directors", HttpMethod.GET, entity, String.class);
+    ResponseEntity<String> response = restTemplate.exchange(
+      "/api/movies/" +
+      savedMovie.getId() +
+      "?fields[movies]=title,year,rating,directors",
+      HttpMethod.GET,
+      entity,
+      String.class
+    );
 
-        String expectedResult =
-                "{\"data\":{\"id\":\""
-                        + savedMovie.getId()
-                        + "\",\"type\":\"movies\",\"attributes\":{\"title\":\"Test Movie\",\"year\":2020,\"imdbId\":\"12345\",\"rating\":9.3,\"rank\":17}}"
-                        + ",\"links\":{\"self\":\"http://localhost:" + this.randomPort + "/api/movies/" + savedMovie.getId() + "\""
-                        + "}}";
+    String expectedResult =
+      "{\"data\":{\"id\":\"" +
+      savedMovie.getId() +
+      "\",\"type\":\"movies\",\"attributes\":{\"title\":\"Test Movie\",\"year\":2020,\"imdbId\":\"12345\",\"rating\":9.3,\"rank\":17}}" +
+      ",\"links\":{\"self\":\"http://localhost:" +
+      this.randomPort +
+      "/api/movies/" +
+      savedMovie.getId() +
+      "\"" +
+      "}}";
 
-        assertThat(response.getBody()).isEqualTo(expectedResult);
-    }
+    assertThat(response.getBody()).isEqualTo(expectedResult);
+  }
 
-    @Test
-    @Disabled
-    void should_create_single_movie() {
-        Movie movie = new Movie("12345", "Test Movie", 2020, 9.3, 17, null);
+  @Test
+  @Disabled
+  void should_create_single_movie() {
+    Movie movie = new Movie("12345", "Test Movie", 2020, 9.3, 17, null);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", MediaTypes.JSON_API_VALUE);
-        headers.set("Accept", MediaTypes.JSON_API_VALUE);
+    final HttpHeaders headers = new HttpHeaders();
+    headers.set("Content-Type", MediaTypes.JSON_API_VALUE);
+    headers.set("Accept", MediaTypes.JSON_API_VALUE);
 
-        String movieJson = "{\n" +
-                "\t\"data\": {\n" +
-                "\t\t\"type\": \"movies\",\n" +
-                "\t\t\"attributes\": {\n" +
-                "\t\t\t\"title\": \"Test Movie\",\n" +
-                "\t\t\t\"year\": 2021,\n" +
-                "\t\t\t\"imdbId\": \"imdb\",\n" +
-                "\t\t\t\"rating\": 6.5,\n" +
-                "\t\t\t\"rank\": 5\n" +
-                "\t\t}\n" +
-                "\t}\n" +
-                "}";
+    String movieJson =
+      "{\n" +
+      "\t\"data\": {\n" +
+      "\t\t\"type\": \"movies\",\n" +
+      "\t\t\"attributes\": {\n" +
+      "\t\t\t\"title\": \"Test Movie\",\n" +
+      "\t\t\t\"year\": 2021,\n" +
+      "\t\t\t\"imdbId\": \"imdb\",\n" +
+      "\t\t\t\"rating\": 6.5,\n" +
+      "\t\t\t\"rank\": 5\n" +
+      "\t\t}\n" +
+      "\t}\n" +
+      "}";
 
-        final HttpEntity<String> entity = new HttpEntity<>(movieJson, headers);
+    final HttpEntity<String> entity = new HttpEntity<>(movieJson, headers);
 
-        ResponseEntity<String> response =
-                restTemplate.postForEntity("/api/movies", entity, String.class);
+    ResponseEntity<String> response = restTemplate.postForEntity(
+      "/api/movies",
+      entity,
+      String.class
+    );
 
-        String location = response.getHeaders().get("location").get(0);
-        String id = location.substring(location.lastIndexOf("/") + 1);
-        String expectedResult =
-                "{\"data\":{\"id\":\""
-                        + id
-                        + "\",\"type\":\"movies\",\"attributes\":{\"title\":\"Test Movie\",\"year\":2020,\"imdbId\":\"12345\",\"rating\":9.3,\"rank\":17}}"
-                        + ",\"links\":{\"self\":\"http://localhost:" + this.randomPort + "/api/movies/" + id + "\","
-                        + "\"movie\":\"http://localhost:" + this.randomPort + "/api/movies/" + id + "\"}}";
+    String location = response.getHeaders().get("location").get(0);
+    String id = location.substring(location.lastIndexOf("/") + 1);
+    String expectedResult =
+      "{\"data\":{\"id\":\"" +
+      id +
+      "\",\"type\":\"movies\",\"attributes\":{\"title\":\"Test Movie\",\"year\":2020,\"imdbId\":\"12345\",\"rating\":9.3,\"rank\":17}}" +
+      ",\"links\":{\"self\":\"http://localhost:" +
+      this.randomPort +
+      "/api/movies/" +
+      id +
+      "\"," +
+      "\"movie\":\"http://localhost:" +
+      this.randomPort +
+      "/api/movies/" +
+      id +
+      "\"}}";
 
-        assertThat(response.getBody()).isEqualTo(expectedResult);
-    }
+    assertThat(response.getBody()).isEqualTo(expectedResult);
+  }
 }

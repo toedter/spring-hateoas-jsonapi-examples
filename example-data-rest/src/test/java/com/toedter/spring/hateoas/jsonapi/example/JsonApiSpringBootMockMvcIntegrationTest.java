@@ -16,6 +16,12 @@
 
 package com.toedter.spring.hateoas.jsonapi.example;
 
+import static com.toedter.spring.hateoas.jsonapi.MediaTypes.JSON_API;
+import static org.hamcrest.CoreMatchers.is;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.toedter.spring.hateoas.jsonapi.example.director.DirectorRepository;
 import com.toedter.spring.hateoas.jsonapi.example.movie.Movie;
 import com.toedter.spring.hateoas.jsonapi.example.movie.MovieRepository;
@@ -29,41 +35,40 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static com.toedter.spring.hateoas.jsonapi.MediaTypes.JSON_API;
-import static org.hamcrest.CoreMatchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @SpringBootTest
 @AutoConfigureMockMvc
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @DisplayName("Spring Boot MockMvc Integration Test")
 public class JsonApiSpringBootMockMvcIntegrationTest {
-    @Autowired
-    private MockMvc mockMvc;
 
-    @Autowired
-    private MovieRepository movieRepository;
+  @Autowired
+  private MockMvc mockMvc;
 
-    @MockitoBean
-    private DirectorRepository directorRepository;
+  @Autowired
+  private MovieRepository movieRepository;
 
-    @Test
-    void should_get_single_movie() throws Exception {
+  @MockitoBean
+  private DirectorRepository directorRepository;
 
-        Movie movie = new Movie("12345", "Test Movie", 2020, 9.3, 17, null);
-        Movie createdMovie = movieRepository.save(movie);
+  @Test
+  void should_get_single_movie() throws Exception {
+    Movie movie = new Movie("12345", "Test Movie", 2020, 9.3, 17, null);
+    Movie createdMovie = movieRepository.save(movie);
 
-        this.mockMvc
-                .perform(get("/api/movies/" + createdMovie.getId()).accept(JSON_API))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.id", is("" + createdMovie.getId())))
-                .andExpect(jsonPath("$.data.type", is("movies")))
-                .andExpect(jsonPath("$.data.attributes.title", is("Test Movie")))
-                .andExpect(jsonPath("$.data.attributes.year", is(2020)))
-                .andExpect(jsonPath("$.data.attributes.rating", is(9.3)))
-                .andExpect(jsonPath("$.links.self",
-                        is("http://localhost/api/movies/" + createdMovie.getId())));
-    }
+    this.mockMvc.perform(
+        get("/api/movies/" + createdMovie.getId()).accept(JSON_API)
+      )
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.data.id", is("" + createdMovie.getId())))
+      .andExpect(jsonPath("$.data.type", is("movies")))
+      .andExpect(jsonPath("$.data.attributes.title", is("Test Movie")))
+      .andExpect(jsonPath("$.data.attributes.year", is(2020)))
+      .andExpect(jsonPath("$.data.attributes.rating", is(9.3)))
+      .andExpect(
+        jsonPath(
+          "$.links.self",
+          is("http://localhost/api/movies/" + createdMovie.getId())
+        )
+      );
+  }
 }

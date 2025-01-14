@@ -16,6 +16,10 @@
 
 package com.toedter.spring.hateoas.jsonapi.example;
 
+import static com.toedter.spring.hateoas.jsonapi.MediaTypes.JSON_API_VALUE;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import com.toedter.spring.hateoas.jsonapi.example.director.DirectorController;
 import com.toedter.spring.hateoas.jsonapi.example.movie.MovieController;
 import org.springframework.hateoas.Link;
@@ -25,34 +29,38 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import static com.toedter.spring.hateoas.jsonapi.MediaTypes.JSON_API_VALUE;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 @RestController
 @RequestMapping(value = RootController.API_BASE_PATH, produces = JSON_API_VALUE)
 public class RootController {
 
-	public static final String API_BASE_PATH = "/api";
+  public static final String API_BASE_PATH = "/api";
 
-	@GetMapping
-    ResponseEntity<RepresentationModel<?>> root() {
+  @GetMapping
+  ResponseEntity<RepresentationModel<?>> root() {
+    RepresentationModel<?> resourceSupport = new RepresentationModel<>();
 
-		RepresentationModel<?> resourceSupport = new RepresentationModel<>();
+    resourceSupport.add(
+      linkTo(methodOn(RootController.class).root()).withSelfRel()
+    );
 
-		resourceSupport.add(linkTo(methodOn(RootController.class).root()).withSelfRel());
+    Link selfLink = linkTo(MovieController.class)
+      .slash("movies")
+      .withRel("movies");
+    Link templatedLink = Link.of(
+      selfLink.getHref() + "{?page[number],page[size]}"
+    ).withRel("movies");
 
-		Link selfLink = linkTo(MovieController.class).slash("movies").withRel("movies");
-		Link templatedLink = Link.of(selfLink.getHref() + "{?page[number],page[size]}").withRel("movies");
+    resourceSupport.add(templatedLink);
 
-		resourceSupport.add(templatedLink);
+    selfLink = linkTo(DirectorController.class)
+      .slash("directors")
+      .withRel("directors");
+    templatedLink = Link.of(
+      selfLink.getHref() + "{?page[number],page[size]}"
+    ).withRel("directors");
 
-		selfLink = linkTo(DirectorController.class).slash("directors").withRel("directors");
-		templatedLink = Link.of(selfLink.getHref() + "{?page[number],page[size]}").withRel("directors");
+    resourceSupport.add(templatedLink);
 
-		resourceSupport.add(templatedLink);
-
-		return ResponseEntity.ok(resourceSupport);
-	}
-
+    return ResponseEntity.ok(resourceSupport);
+  }
 }

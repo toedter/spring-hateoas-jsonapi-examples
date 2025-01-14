@@ -26,8 +26,12 @@ import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
 @Configuration
 @EnableJpaAuditing
 public class MovieRepositoryConfiguration {
-    @Bean
-    RepositoryRestConfigurer dataRestConfigurer(JsonApiMediaTypeConfiguration mappingInfo, ObjectMapper mapper) {
-        return new MovieRepositoryRestConfigurer(mappingInfo, mapper);
-    }
+
+  @Bean
+  RepositoryRestConfigurer dataRestConfigurer(
+    JsonApiMediaTypeConfiguration mappingInfo,
+    ObjectMapper mapper
+  ) {
+    return new MovieRepositoryRestConfigurer(mappingInfo, mapper);
+  }
 }

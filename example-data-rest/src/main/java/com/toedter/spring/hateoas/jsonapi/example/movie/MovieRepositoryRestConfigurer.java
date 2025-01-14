@@ -18,33 +18,46 @@ package com.toedter.spring.hateoas.jsonapi.example.movie;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.toedter.spring.hateoas.jsonapi.JsonApiMediaTypeConfiguration;
+import java.util.List;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
 import org.springframework.hateoas.server.mvc.TypeConstrainedMappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
-import java.util.List;
-
 class MovieRepositoryRestConfigurer implements RepositoryRestConfigurer {
 
-    private final JsonApiMediaTypeConfiguration mappingInfo;
-    private final ObjectMapper mapper;
+  private final JsonApiMediaTypeConfiguration mappingInfo;
+  private final ObjectMapper mapper;
 
-    MovieRepositoryRestConfigurer(JsonApiMediaTypeConfiguration mappingInfo, ObjectMapper mapper) {
-        this.mappingInfo = mappingInfo;
-        this.mapper = mapper;
-    }
+  MovieRepositoryRestConfigurer(
+    JsonApiMediaTypeConfiguration mappingInfo,
+    ObjectMapper mapper
+  ) {
+    this.mappingInfo = mappingInfo;
+    this.mapper = mapper;
+  }
 
-    @Override
-    public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
-        config.exposeIdsFor(Movie.class);
-        config.useHalAsDefaultJsonMediaType(false);
-    }
+  @Override
+  public void configureRepositoryRestConfiguration(
+    RepositoryRestConfiguration config,
+    CorsRegistry cors
+  ) {
+    config.exposeIdsFor(Movie.class);
+    config.useHalAsDefaultJsonMediaType(false);
+  }
 
-    @Override
-    public void configureHttpMessageConverters(List<HttpMessageConverter<?>> messageConverters) {
-        messageConverters.add(0, new TypeConstrainedMappingJackson2HttpMessageConverter(
-            mappingInfo.getRootType(), mappingInfo.getMediaTypes(), mappingInfo.configureObjectMapper(mapper)));
-    }
+  @Override
+  public void configureHttpMessageConverters(
+    List<HttpMessageConverter<?>> messageConverters
+  ) {
+    messageConverters.add(
+      0,
+      new TypeConstrainedMappingJackson2HttpMessageConverter(
+        mappingInfo.getRootType(),
+        mappingInfo.getMediaTypes(),
+        mappingInfo.configureObjectMapper(mapper)
+      )
+    );
+  }
 }

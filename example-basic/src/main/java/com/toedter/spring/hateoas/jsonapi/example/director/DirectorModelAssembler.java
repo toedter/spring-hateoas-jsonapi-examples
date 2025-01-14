@@ -16,20 +16,23 @@
 
 package com.toedter.spring.hateoas.jsonapi.example.director;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 @Component
 @Slf4j
 class DirectorModelAssembler {
-    public EntityModel<Director> toModel(Director director) {
-        Link selfLink = linkTo(methodOn(DirectorController.class).findOne(director.getId(), null)).withSelfRel();
 
-        return EntityModel.of(director, selfLink);
-    }
+  public EntityModel<Director> toModel(Director director) {
+    Link selfLink = linkTo(
+      methodOn(DirectorController.class).findOne(director.getId(), null)
+    ).withSelfRel();
+
+    return EntityModel.of(director, selfLink);
+  }
 }

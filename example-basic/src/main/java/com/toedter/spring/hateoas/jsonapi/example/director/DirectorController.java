@@ -16,7 +16,13 @@
 
 package com.toedter.spring.hateoas.jsonapi.example.director;
 
+import static com.toedter.spring.hateoas.jsonapi.MediaTypes.JSON_API_VALUE;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+
 import com.toedter.spring.hateoas.jsonapi.example.RootController;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.EntityModel;
@@ -29,57 +35,81 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static com.toedter.spring.hateoas.jsonapi.MediaTypes.JSON_API_VALUE;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-
 @RestController
 @RequestMapping(value = RootController.API_BASE_PATH, produces = JSON_API_VALUE)
 public class DirectorController {
 
-    private final DirectorRepository repository;
-    private final DirectorModelAssembler directorModelAssembler;
+  private final DirectorRepository repository;
+  private final DirectorModelAssembler directorModelAssembler;
 
-    DirectorController(DirectorRepository repository, DirectorModelAssembler directorModelAssembler) {
-        this.repository = repository;
-        this.directorModelAssembler = directorModelAssembler;
-    }
+  DirectorController(
+    DirectorRepository repository,
+    DirectorModelAssembler directorModelAssembler
+  ) {
+    this.repository = repository;
+    this.directorModelAssembler = directorModelAssembler;
+  }
 
-    @GetMapping("/directors")
-    public ResponseEntity<PagedModel<EntityModel<Director>>> findAll(
-            @RequestParam(value = "page[number]", defaultValue = "0", required = false) int pageNumber,
-            @RequestParam(value = "page[size]", defaultValue = "10", required = false) int pageSize) {
+  @GetMapping("/directors")
+  public ResponseEntity<PagedModel<EntityModel<Director>>> findAll(
+    @RequestParam(
+      value = "page[number]",
+      defaultValue = "0",
+      required = false
+    ) int pageNumber,
+    @RequestParam(
+      value = "page[size]",
+      defaultValue = "10",
+      required = false
+    ) int pageSize
+  ) {
+    final PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
 
-        final PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
+    final Page<Director> pagedResult = repository.findAll(pageRequest);
 
-        final Page<Director> pagedResult = repository.findAll(pageRequest);
+    List<EntityModel<Director>> directorResources = StreamSupport.stream(
+      pagedResult.spliterator(),
+      false
+    )
+      .map(directorModelAssembler::toModel)
+      .collect(Collectors.toList());
 
-        List<EntityModel<Director>> directorResources = StreamSupport.stream(pagedResult.spliterator(), false)
-                .map(directorModelAssembler::toModel)
-                .collect(Collectors.toList());
+    Link selfLink = linkTo(DirectorController.class)
+      .slash(
+        "directors?page[number]=" +
+        pagedResult.getNumber() +
+        "&page[size]=" +
+        pagedResult.getSize()
+      )
+      .withSelfRel();
 
-        Link selfLink = linkTo(DirectorController.class).slash(
-                "directors?page[number]=" + pagedResult.getNumber()
-                        + "&page[size]=" + pagedResult.getSize()).withSelfRel();
+    PagedModel.PageMetadata pageMetadata = new PagedModel.PageMetadata(
+      pagedResult.getSize(),
+      pagedResult.getNumber(),
+      pagedResult.getTotalElements(),
+      pagedResult.getTotalPages()
+    );
+    final PagedModel<EntityModel<Director>> pagedModel = PagedModel.of(
+      directorResources,
+      pageMetadata,
+      selfLink
+    );
 
-        PagedModel.PageMetadata pageMetadata =
-                new PagedModel.PageMetadata(pagedResult.getSize(), pagedResult.getNumber(), pagedResult.getTotalElements(), pagedResult.getTotalPages());
-        final PagedModel<EntityModel<Director>> pagedModel =
-                PagedModel.of(directorResources, pageMetadata, selfLink);
+    return ResponseEntity.ok(pagedModel);
+  }
 
-        return ResponseEntity.ok(pagedModel);
-    }
-
-    @GetMapping("/directors/{id}")
-    public ResponseEntity<EntityModel<Director>> findOne(
-            @PathVariable Long id,
-            @RequestParam(value = "fields[directors]", required = false) String[] fieldsDirectors) {
-        return repository.findById(id)
-                .map(directorModelAssembler::toModel)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
+  @GetMapping("/directors/{id}")
+  public ResponseEntity<EntityModel<Director>> findOne(
+    @PathVariable Long id,
+    @RequestParam(
+      value = "fields[directors]",
+      required = false
+    ) String[] fieldsDirectors
+  ) {
+    return repository
+      .findById(id)
+      .map(directorModelAssembler::toModel)
+      .map(ResponseEntity::ok)
+      .orElse(ResponseEntity.notFound().build());
+  }
 }

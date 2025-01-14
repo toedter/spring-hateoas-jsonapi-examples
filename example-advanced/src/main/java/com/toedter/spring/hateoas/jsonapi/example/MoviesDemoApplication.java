@@ -26,17 +26,21 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 public class MoviesDemoApplication implements WebMvcConfigurer {
-    public static void main(String... args) {
-         SpringApplication.run(MoviesDemoApplication.class, args);
-    }
 
-    @Bean
-    public JsonApiConfiguration jsonApiConfiguration() {
-        return new JsonApiConfiguration()
-                .withJsonApiObject(new JsonApiObject(true))
-                .withObjectMapperCustomizer(objectMapper -> {
-                    // put your additional object mapper config here
-                    objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
-                });
-    }
+  public static void main(String... args) {
+    SpringApplication.run(MoviesDemoApplication.class, args);
+  }
+
+  @Bean
+  public JsonApiConfiguration jsonApiConfiguration() {
+    return new JsonApiConfiguration()
+      .withJsonApiObject(new JsonApiObject(true))
+      .withObjectMapperCustomizer(objectMapper -> {
+        // put your additional object mapper config here
+        objectMapper.configure(
+          SerializationFeature.WRITE_DATES_AS_TIMESTAMPS,
+          true
+        );
+      });
+  }
 }

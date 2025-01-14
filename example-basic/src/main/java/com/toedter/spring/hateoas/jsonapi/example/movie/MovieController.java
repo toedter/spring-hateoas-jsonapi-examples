@@ -16,9 +16,18 @@
 
 package com.toedter.spring.hateoas.jsonapi.example.movie;
 
+import static com.toedter.spring.hateoas.jsonapi.MediaTypes.JSON_API_VALUE;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+
 import com.toedter.spring.hateoas.jsonapi.example.RootController;
 import com.toedter.spring.hateoas.jsonapi.example.director.Director;
 import jakarta.persistence.EntityNotFoundException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.EntityModel;
@@ -37,130 +46,153 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static com.toedter.spring.hateoas.jsonapi.MediaTypes.JSON_API_VALUE;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-
 @RestController
 @RequestMapping(value = RootController.API_BASE_PATH, produces = JSON_API_VALUE)
 public class MovieController {
 
-    private final MovieRepository repository;
-    private final MovieModelAssembler movieModelAssembler;
+  private final MovieRepository repository;
+  private final MovieModelAssembler movieModelAssembler;
 
-    MovieController(MovieRepository repository, MovieModelAssembler movieModelAssembler) {
-        this.repository = repository;
-        this.movieModelAssembler = movieModelAssembler;
-    }
+  MovieController(
+    MovieRepository repository,
+    MovieModelAssembler movieModelAssembler
+  ) {
+    this.repository = repository;
+    this.movieModelAssembler = movieModelAssembler;
+  }
 
-    @GetMapping("/movies")
-    public ResponseEntity<PagedModel<EntityModel<Movie>>> findAll(
-            @RequestParam(value = "page[number]", defaultValue = "0", required = false) int page,
-            @RequestParam(value = "page[size]", defaultValue = "10", required = false) int size) {
+  @GetMapping("/movies")
+  public ResponseEntity<PagedModel<EntityModel<Movie>>> findAll(
+    @RequestParam(
+      value = "page[number]",
+      defaultValue = "0",
+      required = false
+    ) int page,
+    @RequestParam(
+      value = "page[size]",
+      defaultValue = "10",
+      required = false
+    ) int size
+  ) {
+    final PageRequest pageRequest = PageRequest.of(page, size);
 
-        final PageRequest pageRequest = PageRequest.of(page, size);
+    final Page<Movie> pagedResult = repository.findAll(pageRequest);
 
-        final Page<Movie> pagedResult = repository.findAll(pageRequest);
+    List<EntityModel<Movie>> movieResources = StreamSupport.stream(
+      pagedResult.spliterator(),
+      false
+    )
+      .map(movieModelAssembler::toModel)
+      .collect(Collectors.toList());
 
-        List<EntityModel<Movie>> movieResources =
-                StreamSupport.stream(pagedResult.spliterator(), false)
-                        .map(movieModelAssembler::toModel)
-                        .collect(Collectors.toList());
+    Link selfLink = linkTo(MovieController.class)
+      .slash(
+        "movies?page[number]=" +
+        pagedResult.getNumber() +
+        "&page[size]=" +
+        pagedResult.getSize()
+      )
+      .withSelfRel();
 
-        Link selfLink = linkTo(MovieController.class).slash(
-                "movies?page[number]=" + pagedResult.getNumber()
-                        + "&page[size]=" + pagedResult.getSize()).withSelfRel();
+    PagedModel.PageMetadata pageMetadata = new PagedModel.PageMetadata(
+      pagedResult.getSize(),
+      pagedResult.getNumber(),
+      pagedResult.getTotalElements(),
+      pagedResult.getTotalPages()
+    );
 
-        PagedModel.PageMetadata pageMetadata =
-                new PagedModel.PageMetadata(
-                        pagedResult.getSize(),
-                        pagedResult.getNumber(),
-                        pagedResult.getTotalElements(),
-                        pagedResult.getTotalPages());
+    final PagedModel<EntityModel<Movie>> pagedModel = PagedModel.of(
+      movieResources,
+      pageMetadata
+    );
 
-        final PagedModel<EntityModel<Movie>> pagedModel =
-                PagedModel.of(movieResources, pageMetadata);
+    return ResponseEntity.ok(pagedModel);
+  }
 
-        return ResponseEntity.ok(pagedModel);
-    }
+  @PostMapping("/movies")
+  public ResponseEntity<?> newMovie(@RequestBody Movie movie) {
+    repository.save(movie);
+    final RepresentationModel<?> movieRepresentationModel =
+      movieModelAssembler.toModel(movie);
 
-    @PostMapping("/movies")
-    public ResponseEntity<?> newMovie(@RequestBody Movie movie) {
-        repository.save(movie);
-        final RepresentationModel<?> movieRepresentationModel = movieModelAssembler.toModel(movie);
-
-        return movieRepresentationModel
-                .getLink(IanaLinkRelations.SELF)
-                .map(Link::getHref)
-                .map(href -> {
-                    try {
-                        return new URI(href);
-                    } catch (URISyntaxException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .map(uri -> ResponseEntity.created(uri).build())
-                .orElse(ResponseEntity.badRequest().body("Unable to create " + movie));
-    }
-
-    @GetMapping("/movies/{id}")
-    public ResponseEntity<? extends RepresentationModel<?>> findOne(
-            @PathVariable Long id) {
-
-        return repository.findById(id)
-                .map(movieModelAssembler::toModel)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/movies/{id}/directors")
-    public ResponseEntity<? extends RepresentationModel<?>> findDirectors(@PathVariable Long id) {
-
-        return repository.findById(id)
-                .map(movieModelAssembler::toModel)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @PatchMapping("/movies/{id}")
-    public ResponseEntity<?> updateMoviePartially(@RequestBody Movie movie, @PathVariable Long id) {
-
-        Movie existingMovie = repository.findById(id).orElseThrow(() -> new EntityNotFoundException(id.toString()));
-        existingMovie.update(movie);
-
-        repository.save(existingMovie);
-        final RepresentationModel<?> movieRepresentationModel = movieModelAssembler.toModel(movie);
-
-        return movieRepresentationModel
-                .getLink(IanaLinkRelations.SELF)
-                .map(Link::getHref).map(href -> {
-                    try {
-                        return new URI(href);
-                    } catch (URISyntaxException e) {
-                        throw new RuntimeException(e);
-                    }
-                }) //
-                .map(uri -> ResponseEntity.noContent().location(uri).build()) //
-                .orElse(ResponseEntity.badRequest().body("Unable to update " + existingMovie + " partially"));
-    }
-
-    @DeleteMapping("/movies/{id}")
-    public ResponseEntity<?> deleteMovie(@PathVariable Long id) {
-        Optional<Movie> optional = repository.findById(id);
-        if (optional.isPresent()) {
-            Movie movie = optional.get();
-            for (Director director : movie.getDirectors()) {
-                director.deleteMovie(movie);
-            }
-            repository.deleteById(id);
+    return movieRepresentationModel
+      .getLink(IanaLinkRelations.SELF)
+      .map(Link::getHref)
+      .map(href -> {
+        try {
+          return new URI(href);
+        } catch (URISyntaxException e) {
+          throw new RuntimeException(e);
         }
+      })
+      .map(uri -> ResponseEntity.created(uri).build())
+      .orElse(ResponseEntity.badRequest().body("Unable to create " + movie));
+  }
 
-        return ResponseEntity.noContent().build();
+  @GetMapping("/movies/{id}")
+  public ResponseEntity<? extends RepresentationModel<?>> findOne(
+    @PathVariable Long id
+  ) {
+    return repository
+      .findById(id)
+      .map(movieModelAssembler::toModel)
+      .map(ResponseEntity::ok)
+      .orElse(ResponseEntity.notFound().build());
+  }
+
+  @GetMapping("/movies/{id}/directors")
+  public ResponseEntity<? extends RepresentationModel<?>> findDirectors(
+    @PathVariable Long id
+  ) {
+    return repository
+      .findById(id)
+      .map(movieModelAssembler::toModel)
+      .map(ResponseEntity::ok)
+      .orElse(ResponseEntity.notFound().build());
+  }
+
+  @PatchMapping("/movies/{id}")
+  public ResponseEntity<?> updateMoviePartially(
+    @RequestBody Movie movie,
+    @PathVariable Long id
+  ) {
+    Movie existingMovie = repository
+      .findById(id)
+      .orElseThrow(() -> new EntityNotFoundException(id.toString()));
+    existingMovie.update(movie);
+
+    repository.save(existingMovie);
+    final RepresentationModel<?> movieRepresentationModel =
+      movieModelAssembler.toModel(movie);
+
+    return movieRepresentationModel
+      .getLink(IanaLinkRelations.SELF)
+      .map(Link::getHref)
+      .map(href -> {
+        try {
+          return new URI(href);
+        } catch (URISyntaxException e) {
+          throw new RuntimeException(e);
+        }
+      }) //
+      .map(uri -> ResponseEntity.noContent().location(uri).build()) //
+      .orElse(
+        ResponseEntity.badRequest()
+          .body("Unable to update " + existingMovie + " partially")
+      );
+  }
+
+  @DeleteMapping("/movies/{id}")
+  public ResponseEntity<?> deleteMovie(@PathVariable Long id) {
+    Optional<Movie> optional = repository.findById(id);
+    if (optional.isPresent()) {
+      Movie movie = optional.get();
+      for (Director director : movie.getDirectors()) {
+        director.deleteMovie(movie);
+      }
+      repository.deleteById(id);
     }
+
+    return ResponseEntity.noContent().build();
+  }
 }

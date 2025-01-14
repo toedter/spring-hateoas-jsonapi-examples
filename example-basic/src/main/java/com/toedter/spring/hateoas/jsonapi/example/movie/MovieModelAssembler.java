@@ -16,21 +16,23 @@
 
 package com.toedter.spring.hateoas.jsonapi.example.movie;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 @Component
 @Slf4j
 class MovieModelAssembler {
 
-    public EntityModel<Movie> toModel(Movie movie) {
-        Link selfLink = linkTo(methodOn(MovieController.class).findOne(movie.getId())).withSelfRel();
+  public EntityModel<Movie> toModel(Movie movie) {
+    Link selfLink = linkTo(
+      methodOn(MovieController.class).findOne(movie.getId())
+    ).withSelfRel();
 
-        return EntityModel.of(movie, selfLink);
-    }
+    return EntityModel.of(movie, selfLink);
+  }
 }

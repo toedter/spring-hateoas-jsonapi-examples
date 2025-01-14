@@ -16,10 +16,19 @@
 
 package com.toedter.spring.hateoas.jsonapi.example;
 
+import static com.toedter.spring.hateoas.jsonapi.MediaTypes.JSON_API;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.empty;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.toedter.spring.hateoas.jsonapi.example.director.DirectorRepository;
 import com.toedter.spring.hateoas.jsonapi.example.movie.Movie;
 import com.toedter.spring.hateoas.jsonapi.example.movie.MovieController;
 import com.toedter.spring.hateoas.jsonapi.example.movie.MovieRepository;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -31,16 +40,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Optional;
-
-import static com.toedter.spring.hateoas.jsonapi.MediaTypes.JSON_API;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
-import static org.hamcrest.Matchers.empty;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 /**
  * @author Kai Toedter
  */
@@ -49,34 +48,32 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @DisplayName("WebMvc Integration Test")
 public class JsonApiWebMvcIntegrationTest {
-    @Autowired
-    private MockMvc mockMvc;
 
-    @MockitoBean
-    private MovieRepository movieRepository;
+  @Autowired
+  private MockMvc mockMvc;
 
-    @MockitoBean
-    private DirectorRepository directorRepository;
+  @MockitoBean
+  private MovieRepository movieRepository;
 
-    @Test
-    void should_get_single_movie() throws Exception {
+  @MockitoBean
+  private DirectorRepository directorRepository;
 
-        Movie movie = new Movie("12345", "Test Movie", 2020, 9.3, 17, null);
-        movie.setId(1L);
+  @Test
+  void should_get_single_movie() throws Exception {
+    Movie movie = new Movie("12345", "Test Movie", 2020, 9.3, 17, null);
+    movie.setId(1L);
 
-        Mockito.when(movieRepository.findById(1L))
-                .thenReturn(Optional.of(movie));
+    Mockito.when(movieRepository.findById(1L)).thenReturn(Optional.of(movie));
 
-        this.mockMvc
-                .perform(get("/api/movies/1").accept(JSON_API))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.jsonapi", is(not(empty()))))
-                .andExpect(jsonPath("$.jsonapi.version", is("1.1")))
-                .andExpect(jsonPath("$.data.id", is("1")))
-                .andExpect(jsonPath("$.data.type", is("movies")))
-                .andExpect(jsonPath("$.data.attributes.title", is("Test Movie")))
-                .andExpect(jsonPath("$.data.attributes.year", is(2020)))
-                .andExpect(jsonPath("$.data.attributes.rating", is(9.3)))
-                .andExpect(jsonPath("$.links.self", is("http://localhost/api/movies/1")));
-    }
+    this.mockMvc.perform(get("/api/movies/1").accept(JSON_API))
+      .andExpect(status().isOk())
+      .andExpect(jsonPath("$.jsonapi", is(not(empty()))))
+      .andExpect(jsonPath("$.jsonapi.version", is("1.1")))
+      .andExpect(jsonPath("$.data.id", is("1")))
+      .andExpect(jsonPath("$.data.type", is("movies")))
+      .andExpect(jsonPath("$.data.attributes.title", is("Test Movie")))
+      .andExpect(jsonPath("$.data.attributes.year", is(2020)))
+      .andExpect(jsonPath("$.data.attributes.rating", is(9.3)))
+      .andExpect(jsonPath("$.links.self", is("http://localhost/api/movies/1")));
+  }
 }
