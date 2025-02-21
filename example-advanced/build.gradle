@@ -21,7 +21,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
-    implementation 'com.toedter:spring-hateoas-jsonapi:2.1.1'
+    implementation 'com.toedter:spring-hateoas-jsonapi:2.1.2'
 
     implementation project(':example-model')
 
