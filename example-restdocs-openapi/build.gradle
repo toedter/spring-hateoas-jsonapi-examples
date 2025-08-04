@@ -8,7 +8,6 @@ plugins {
 
 group = 'com.toedter'
 version = '2.0.0'
-sourceCompatibility = '1.17'
 
 repositories {
     mavenCentral()
@@ -39,7 +38,7 @@ test {
 
 bootJar {
     mainClass = "com.toedter.spring.hateoas.jsonapi.example.MoviesDemoApplication"
-    archivesBaseName = "spring-hateoas-jsonapi-example-restdocs"
+    archiveBaseName = "spring-hateoas-jsonapi-example-restdocs"
 }
 
 openapi3 {
@@ -49,4 +48,9 @@ openapi3 {
 //    tagDescriptionsPropertiesFile = 'src/docs/tag-descriptions.yaml'
     version = '1.0.0'
     format = 'yaml'
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }

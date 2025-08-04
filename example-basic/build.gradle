@@ -7,7 +7,6 @@ plugins {
 
 group = 'com.toedter'
 version = '2.0.0'
-sourceCompatibility = '1.17'
 
 repositories {
     mavenCentral()
@@ -33,5 +32,10 @@ test {
 }
 
 bootJar {
-    archivesBaseName = "spring-hateoas-jsonapi-example-basic"
+    archiveBaseName = "spring-hateoas-jsonapi-example-basic"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
