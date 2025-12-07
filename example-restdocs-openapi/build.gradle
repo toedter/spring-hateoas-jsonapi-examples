@@ -18,7 +18,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.toedter:spring-hateoas-jsonapi:2.1.4'
+    implementation 'com.toedter:spring-hateoas-jsonapi:2.2.0'
 
     implementation project(':example-model')
     implementation project(':example-advanced')
