@@ -85,15 +85,6 @@ public class MovieController {
       .map(movieModelAssembler::toModel)
       .collect(Collectors.toList());
 
-    Link selfLink = linkTo(MovieController.class)
-      .slash(
-        "movies?page[number]=" +
-          pagedResult.getNumber() +
-          "&page[size]=" +
-          pagedResult.getSize()
-      )
-      .withSelfRel();
-
     PagedModel.PageMetadata pageMetadata = new PagedModel.PageMetadata(
       pagedResult.getSize(),
       pagedResult.getNumber(),
@@ -110,7 +101,8 @@ public class MovieController {
   }
 
   @PostMapping("/movies")
-  public ResponseEntity<?> newMovie(@RequestBody Movie movie) {
+  public ResponseEntity<?> newMovie(@RequestBody EntityModel<Movie> movieModel) {
+    Movie movie = movieModel.getContent();
     repository.save(movie);
     final RepresentationModel<?> movieRepresentationModel =
       movieModelAssembler.toModel(movie);
@@ -153,12 +145,13 @@ public class MovieController {
 
   @PatchMapping("/movies/{id}")
   public ResponseEntity<?> updateMoviePartially(
-    @RequestBody Movie movie,
+    @RequestBody EntityModel<Movie> movieModel,
     @PathVariable Long id
   ) {
     Movie existingMovie = repository
       .findById(id)
       .orElseThrow(() -> new EntityNotFoundException(id.toString()));
+    Movie movie = movieModel.getContent();
     existingMovie.update(movie);
 
     repository.save(existingMovie);
