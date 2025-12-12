@@ -153,11 +153,10 @@ class JsonApiSpringBootDataRestIntegrationTest {
           }
         },
         "links": {
-          "self": "http://localhost:%d/api/movies/%s",
-          "movie": "http://localhost:%d/api/movies/%s"
+          "self": "http://localhost:%d/api/movies/%s"
         }
       }
-      """.formatted(id, this.randomPort, id, this.randomPort, id);
+      """.formatted(id, this.randomPort, id);
 
     JsonMapper jsonMapper = JsonMapper.builder().build();
     JsonNode expectedJsonNode = jsonMapper.readValue(
