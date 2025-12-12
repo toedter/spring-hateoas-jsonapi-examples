@@ -29,7 +29,6 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -67,13 +66,30 @@ public class JsonApiSpringBootMockMvcIntegrationTest {
 
     assertThat(result).hasStatusOk();
     assertThat(result).bodyJson().extractingPath("$.jsonapi").isNotNull();
-    assertThat(result).bodyJson().extractingPath("$.jsonapi.version").isEqualTo("1.1");
+    assertThat(result)
+      .bodyJson()
+      .extractingPath("$.jsonapi.version")
+      .isEqualTo("1.1");
     assertThat(result).bodyJson().extractingPath("$.data.id").isEqualTo("1");
-    assertThat(result).bodyJson().extractingPath("$.data.type").isEqualTo("movies");
-    assertThat(result).bodyJson().extractingPath("$.data.attributes.title").isEqualTo("Test Movie");
-    assertThat(result).bodyJson().extractingPath("$.data.attributes.year").isEqualTo(2020);
-    assertThat(result).bodyJson().extractingPath("$.data.attributes.rating").isEqualTo(9.3);
-    assertThat(result).bodyJson().extractingPath("$.links.self").isEqualTo("http://localhost/api/movies/1");
+    assertThat(result)
+      .bodyJson()
+      .extractingPath("$.data.type")
+      .isEqualTo("movies");
+    assertThat(result)
+      .bodyJson()
+      .extractingPath("$.data.attributes.title")
+      .isEqualTo("Test Movie");
+    assertThat(result)
+      .bodyJson()
+      .extractingPath("$.data.attributes.year")
+      .isEqualTo(2020);
+    assertThat(result)
+      .bodyJson()
+      .extractingPath("$.data.attributes.rating")
+      .isEqualTo(9.3);
+    assertThat(result)
+      .bodyJson()
+      .extractingPath("$.links.self")
+      .isEqualTo("http://localhost/api/movies/1");
   }
 }
-

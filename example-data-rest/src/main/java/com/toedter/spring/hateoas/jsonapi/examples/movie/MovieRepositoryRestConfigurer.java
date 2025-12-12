@@ -18,7 +18,6 @@ package com.toedter.spring.hateoas.jsonapi.examples.movie;
 
 import com.toedter.spring.hateoas.jsonapi.JsonApiMediaTypeConfiguration;
 import java.util.List;
-
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
 import org.springframework.hateoas.server.mvc.TypeConstrainedJacksonJsonHttpMessageConverter;

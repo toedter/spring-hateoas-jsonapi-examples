@@ -16,6 +16,8 @@
 
 package com.toedter.spring.hateoas.jsonapi.examples;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.toedter.spring.hateoas.jsonapi.MediaTypes;
 import com.toedter.spring.hateoas.jsonapi.examples.movie.Movie;
 import com.toedter.spring.hateoas.jsonapi.examples.movie.MovieRepository;
@@ -31,8 +33,6 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.web.servlet.client.RestTestClient;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Kai Toedter
@@ -53,22 +53,24 @@ class JsonApiSpringBootDataRestIntegrationTest {
   private MovieRepository movieRepository;
 
   @BeforeEach
-  void beforeEach() {
-  }
+  void beforeEach() {}
 
   @Test
   void should_get_single_movie() {
     Movie movie = new Movie("12345", "Test Movie", 2020, 9.3, 17, null);
     final Movie savedMovie = movieRepository.save(movie);
 
-
-    String responseBody = restClient.get()
-            .uri("/api/movies/" + savedMovie.getId() + "?fields[movies]=title,year,rating,directors")
-            .accept(MediaTypes.JSON_API)
-            .exchange()
-            .returnResult(String.class)
-            .getResponseBody();
-
+    String responseBody = restClient
+      .get()
+      .uri(
+        "/api/movies/" +
+          savedMovie.getId() +
+          "?fields[movies]=title,year,rating,directors"
+      )
+      .accept(MediaTypes.JSON_API)
+      .exchange()
+      .returnResult(String.class)
+      .getResponseBody();
 
     String expectedResult = """
       {
@@ -90,14 +92,19 @@ class JsonApiSpringBootDataRestIntegrationTest {
       """.formatted(savedMovie.getId(), this.randomPort, savedMovie.getId());
 
     JsonMapper jsonMapper = JsonMapper.builder().build();
-    JsonNode expectedJsonNode = jsonMapper.readValue(expectedResult, JsonNode.class);
-    JsonNode actualJsonNode = jsonMapper.readValue(responseBody, JsonNode.class);
+    JsonNode expectedJsonNode = jsonMapper.readValue(
+      expectedResult,
+      JsonNode.class
+    );
+    JsonNode actualJsonNode = jsonMapper.readValue(
+      responseBody,
+      JsonNode.class
+    );
     assertThat(actualJsonNode).isEqualTo(expectedJsonNode);
   }
 
   @Test
   void should_create_single_movie() {
-
     String movieJson = """
       {
         "data": {
@@ -113,14 +120,17 @@ class JsonApiSpringBootDataRestIntegrationTest {
       }
       """;
 
-    var result = restClient.post()
+    var result = restClient
+      .post()
       .uri("/api/movies")
       .contentType(MediaTypes.JSON_API)
       .accept(MediaTypes.JSON_API)
       .body(movieJson)
       .exchange();
 
-    String location = result.expectStatus().isCreated()
+    String location = result
+      .expectStatus()
+      .isCreated()
       .returnResult(String.class)
       .getResponseHeaders()
       .getLocation()
@@ -150,8 +160,14 @@ class JsonApiSpringBootDataRestIntegrationTest {
       """.formatted(id, this.randomPort, id, this.randomPort, id);
 
     JsonMapper jsonMapper = JsonMapper.builder().build();
-    JsonNode expectedJsonNode = jsonMapper.readValue(expectedResult, JsonNode.class);
-    JsonNode actualJsonNode = jsonMapper.readValue(responseBody, JsonNode.class);
+    JsonNode expectedJsonNode = jsonMapper.readValue(
+      expectedResult,
+      JsonNode.class
+    );
+    JsonNode actualJsonNode = jsonMapper.readValue(
+      responseBody,
+      JsonNode.class
+    );
     assertThat(actualJsonNode).isEqualTo(expectedJsonNode);
   }
 }

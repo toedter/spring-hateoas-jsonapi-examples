@@ -92,9 +92,9 @@ public class DirectorController {
     Link selfLink = linkTo(DirectorController.class)
       .slash(
         "directors?page[number]=" +
-        pagedResult.getNumber() +
-        "&page[size]=" +
-        pagedResult.getSize()
+          pagedResult.getNumber() +
+          "&page[size]=" +
+          pagedResult.getSize()
       )
       .withSelfRel();
 

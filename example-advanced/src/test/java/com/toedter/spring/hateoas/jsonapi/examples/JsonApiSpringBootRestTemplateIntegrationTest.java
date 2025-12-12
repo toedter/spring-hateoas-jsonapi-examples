@@ -44,77 +44,87 @@ import tools.jackson.databind.json.JsonMapper;
 @DisplayName("Spring Boot Integration Test with RestTestClient")
 class JsonApiSpringBootRestTemplateIntegrationTest {
 
-    @LocalServerPort
-    private int randomPort;
+  @LocalServerPort
+  private int randomPort;
 
-    @Autowired
-    private RestTestClient restClient;
+  @Autowired
+  private RestTestClient restClient;
 
-    @Autowired
-    private MovieRepository movieRepository;
+  @Autowired
+  private MovieRepository movieRepository;
 
-    @Autowired
-    private DirectorRepository directorRepository;
+  @Autowired
+  private DirectorRepository directorRepository;
 
-    @BeforeEach
-    void beforeEach() {
-        this.directorRepository.deleteAll();
-        this.movieRepository.deleteAll();
-    }
+  @BeforeEach
+  void beforeEach() {
+    this.directorRepository.deleteAll();
+    this.movieRepository.deleteAll();
+  }
 
-    @Test
-    void should_get_single_movie() {
-        Movie movie = new Movie("12345", "Test Movie", 2020, 9.3, 17, null);
-        final Movie savedMovie = movieRepository.save(movie);
+  @Test
+  void should_get_single_movie() {
+    Movie movie = new Movie("12345", "Test Movie", 2020, 9.3, 17, null);
+    final Movie savedMovie = movieRepository.save(movie);
 
-        String responseBody = restClient.get()
-                .uri("/api/movies/" + savedMovie.getId() + "?fields[movies]=title,year,rating,directors")
-                .accept(MediaTypes.JSON_API)
-                .exchange()
-                .returnResult(String.class)
-                .getResponseBody();
+    String responseBody = restClient
+      .get()
+      .uri(
+        "/api/movies/" +
+          savedMovie.getId() +
+          "?fields[movies]=title,year,rating,directors"
+      )
+      .accept(MediaTypes.JSON_API)
+      .exchange()
+      .returnResult(String.class)
+      .getResponseBody();
 
-        String expectedResult = """
-                {
-                  "jsonapi": {
-                    "version": "1.1"
-                  },
-                  "data": {
-                    "id": "%s",
-                    "type": "movies",
-                    "attributes": {
-                      "title": "Test Movie",
-                      "year": 2020,
-                      "rating": 9.3
-                    },
-                    "relationships": {
-                      "directors": {
-                        "data": [],
-                        "links": {
-                          "self": "http://localhost:%d/api/movies/%s/relationships/directors",
-                          "related": "http://localhost:%d/api/movies/%s/directors"
-                        }
-                      }
-                    }
-                  },
-                  "links": {
-                    "self": "http://localhost:%d/api/movies/%s"
-                  }
-                }
-                """.formatted(
-                savedMovie.getId(),
-                this.randomPort,
-                savedMovie.getId(),
-                this.randomPort,
-                savedMovie.getId(),
-                this.randomPort,
-                savedMovie.getId()
-        );
+    String expectedResult = """
+      {
+        "jsonapi": {
+          "version": "1.1"
+        },
+        "data": {
+          "id": "%s",
+          "type": "movies",
+          "attributes": {
+            "title": "Test Movie",
+            "year": 2020,
+            "rating": 9.3
+          },
+          "relationships": {
+            "directors": {
+              "data": [],
+              "links": {
+                "self": "http://localhost:%d/api/movies/%s/relationships/directors",
+                "related": "http://localhost:%d/api/movies/%s/directors"
+              }
+            }
+          }
+        },
+        "links": {
+          "self": "http://localhost:%d/api/movies/%s"
+        }
+      }
+      """.formatted(
+        savedMovie.getId(),
+        this.randomPort,
+        savedMovie.getId(),
+        this.randomPort,
+        savedMovie.getId(),
+        this.randomPort,
+        savedMovie.getId()
+      );
 
-        JsonMapper jsonMapper = JsonMapper.builder().build();
-        JsonNode expectedJsonNode = jsonMapper.readValue(expectedResult, JsonNode.class);
-        JsonNode actualJsonNode = jsonMapper.readValue(responseBody, JsonNode.class);
-        assertThat(actualJsonNode).isEqualTo(expectedJsonNode);
-    }
+    JsonMapper jsonMapper = JsonMapper.builder().build();
+    JsonNode expectedJsonNode = jsonMapper.readValue(
+      expectedResult,
+      JsonNode.class
+    );
+    JsonNode actualJsonNode = jsonMapper.readValue(
+      responseBody,
+      JsonNode.class
+    );
+    assertThat(actualJsonNode).isEqualTo(expectedJsonNode);
+  }
 }
-

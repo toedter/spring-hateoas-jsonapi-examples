@@ -43,8 +43,9 @@ public class MovieLoader {
     String moviesJson;
     ObjectMapper mapper = new ObjectMapper();
 
-    InputStream in = getClass()
-      .getResourceAsStream("/static/movie-data/movies-250.json");
+    InputStream in = getClass().getResourceAsStream(
+      "/static/movie-data/movies-250.json"
+    );
     BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 
     JsonNode rootNode = mapper.readValue(reader, JsonNode.class);

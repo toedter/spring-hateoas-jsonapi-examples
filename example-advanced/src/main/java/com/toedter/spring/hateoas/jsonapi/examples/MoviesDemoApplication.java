@@ -31,13 +31,12 @@ public class MoviesDemoApplication implements WebMvcConfigurer {
     SpringApplication.run(MoviesDemoApplication.class, args);
   }
 
-    @Bean
-    public JsonApiConfiguration jsonApiConfiguration() {
-        return new JsonApiConfiguration()
-                .withJsonApiObject(new JsonApiObject(true))
-                .withMapperCustomizer(builder ->
-                        builder.enable(SerializationFeature.INDENT_OUTPUT)
-                );
-    }
-
+  @Bean
+  public JsonApiConfiguration jsonApiConfiguration() {
+    return new JsonApiConfiguration()
+      .withJsonApiObject(new JsonApiObject(true))
+      .withMapperCustomizer(builder ->
+        builder.enable(SerializationFeature.INDENT_OUTPUT)
+      );
+  }
 }

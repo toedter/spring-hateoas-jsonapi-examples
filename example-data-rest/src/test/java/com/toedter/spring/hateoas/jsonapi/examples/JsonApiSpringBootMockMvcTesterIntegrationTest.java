@@ -52,17 +52,36 @@ class JsonApiSpringBootMockMvcTesterIntegrationTest {
     Movie movie = new Movie("12345", "Test Movie", 2020, 9.3, 17, null);
     Movie createdMovie = movieRepository.save(movie);
 
-    var result = mockMvcTester.get()
+    var result = mockMvcTester
+      .get()
       .uri("/api/movies/" + createdMovie.getId())
       .accept(JSON_API)
       .exchange();
 
     assertThat(result).hasStatusOk();
-    assertThat(result).bodyJson().extractingPath("$.data.id").isEqualTo("" + createdMovie.getId());
-    assertThat(result).bodyJson().extractingPath("$.data.type").isEqualTo("movies");
-    assertThat(result).bodyJson().extractingPath("$.data.attributes.title").isEqualTo("Test Movie");
-    assertThat(result).bodyJson().extractingPath("$.data.attributes.year").isEqualTo(2020);
-    assertThat(result).bodyJson().extractingPath("$.data.attributes.rating").isEqualTo(9.3);
-    assertThat(result).bodyJson().extractingPath("$.links.self").isEqualTo("http://localhost/api/movies/" + createdMovie.getId());
+    assertThat(result)
+      .bodyJson()
+      .extractingPath("$.data.id")
+      .isEqualTo("" + createdMovie.getId());
+    assertThat(result)
+      .bodyJson()
+      .extractingPath("$.data.type")
+      .isEqualTo("movies");
+    assertThat(result)
+      .bodyJson()
+      .extractingPath("$.data.attributes.title")
+      .isEqualTo("Test Movie");
+    assertThat(result)
+      .bodyJson()
+      .extractingPath("$.data.attributes.year")
+      .isEqualTo(2020);
+    assertThat(result)
+      .bodyJson()
+      .extractingPath("$.data.attributes.rating")
+      .isEqualTo(9.3);
+    assertThat(result)
+      .bodyJson()
+      .extractingPath("$.links.self")
+      .isEqualTo("http://localhost/api/movies/" + createdMovie.getId());
   }
 }

@@ -16,10 +16,14 @@
 
 package com.toedter.spring.hateoas.jsonapi.examples;
 
+import static com.toedter.spring.hateoas.jsonapi.MediaTypes.JSON_API;
+import static org.mockito.ArgumentMatchers.any;
+
 import com.toedter.spring.hateoas.jsonapi.examples.director.DirectorRepository;
 import com.toedter.spring.hateoas.jsonapi.examples.movie.Movie;
 import com.toedter.spring.hateoas.jsonapi.examples.movie.MovieController;
 import com.toedter.spring.hateoas.jsonapi.examples.movie.MovieRepository;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -30,11 +34,6 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
-
-import java.util.Optional;
-
-import static com.toedter.spring.hateoas.jsonapi.MediaTypes.JSON_API;
-import static org.mockito.ArgumentMatchers.any;
 
 /**
  * @author Kai Toedter
@@ -63,28 +62,45 @@ class JsonApiWebMvcIntegrationTest {
 
     var result = mockMvcTester.get().uri("/api/movies/1").accept(JSON_API);
 
-    result.assertThat()
+    result
+      .assertThat()
       .hasStatusOk()
-      .bodyJson().hasPath("$.jsonapi")
-      .extractingPath("$.jsonapi.version").isEqualTo("1.1");
+      .bodyJson()
+      .hasPath("$.jsonapi")
+      .extractingPath("$.jsonapi.version")
+      .isEqualTo("1.1");
 
-    result.assertThat().bodyJson()
-      .extractingPath("$.data.id").isEqualTo("1");
+    result.assertThat().bodyJson().extractingPath("$.data.id").isEqualTo("1");
 
-    result.assertThat().bodyJson()
-      .extractingPath("$.data.type").isEqualTo("movies");
+    result
+      .assertThat()
+      .bodyJson()
+      .extractingPath("$.data.type")
+      .isEqualTo("movies");
 
-    result.assertThat().bodyJson()
-      .extractingPath("$.data.attributes.title").isEqualTo("Test Movie");
+    result
+      .assertThat()
+      .bodyJson()
+      .extractingPath("$.data.attributes.title")
+      .isEqualTo("Test Movie");
 
-    result.assertThat().bodyJson()
-      .extractingPath("$.data.attributes.year").isEqualTo(2020);
+    result
+      .assertThat()
+      .bodyJson()
+      .extractingPath("$.data.attributes.year")
+      .isEqualTo(2020);
 
-    result.assertThat().bodyJson()
-      .extractingPath("$.data.attributes.rating").isEqualTo(9.3);
+    result
+      .assertThat()
+      .bodyJson()
+      .extractingPath("$.data.attributes.rating")
+      .isEqualTo(9.3);
 
-    result.assertThat().bodyJson()
-      .extractingPath("$.links.self").isEqualTo("http://localhost/api/movies/1");
+    result
+      .assertThat()
+      .bodyJson()
+      .extractingPath("$.links.self")
+      .isEqualTo("http://localhost/api/movies/1");
   }
 
   @Test
@@ -110,9 +126,14 @@ class JsonApiWebMvcIntegrationTest {
       return movie;
     });
 
-    mockMvcTester.post().uri("/api/movies").contentType(JSON_API).content(movieJson)
+    mockMvcTester
+      .post()
+      .uri("/api/movies")
+      .contentType(JSON_API)
+      .content(movieJson)
       .assertThat()
       .hasStatus(201)
-      .headers().hasValue("Location", "http://localhost/api/movies/42");
+      .headers()
+      .hasValue("Location", "http://localhost/api/movies/42");
   }
 }

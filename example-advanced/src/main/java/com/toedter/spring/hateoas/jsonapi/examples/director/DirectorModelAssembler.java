@@ -22,7 +22,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.toedter.spring.hateoas.jsonapi.JsonApiModelBuilder;
 import java.util.Arrays;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;

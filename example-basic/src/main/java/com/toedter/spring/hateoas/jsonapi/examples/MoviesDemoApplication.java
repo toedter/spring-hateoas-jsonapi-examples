@@ -32,7 +32,8 @@ public class MoviesDemoApplication implements WebMvcConfigurer {
 
   @Bean
   public JsonApiConfiguration jsonApiConfiguration() {
-    return new JsonApiConfiguration()
-      .withJsonApiObject(new JsonApiObject(true));
+    return new JsonApiConfiguration().withJsonApiObject(
+      new JsonApiObject(true)
+    );
   }
 }

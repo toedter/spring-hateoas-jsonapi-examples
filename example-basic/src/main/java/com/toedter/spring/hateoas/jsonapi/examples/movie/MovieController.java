@@ -88,9 +88,9 @@ public class MovieController {
     Link selfLink = linkTo(MovieController.class)
       .slash(
         "movies?page[number]=" +
-        pagedResult.getNumber() +
-        "&page[size]=" +
-        pagedResult.getSize()
+          pagedResult.getNumber() +
+          "&page[size]=" +
+          pagedResult.getSize()
       )
       .withSelfRel();
 
@@ -177,8 +177,9 @@ public class MovieController {
       }) //
       .map(uri -> ResponseEntity.noContent().location(uri).build()) //
       .orElse(
-        ResponseEntity.badRequest()
-          .body("Unable to update " + existingMovie + " partially")
+        ResponseEntity.badRequest().body(
+          "Unable to update " + existingMovie + " partially"
+        )
       );
   }
 

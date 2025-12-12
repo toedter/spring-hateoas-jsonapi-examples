@@ -23,7 +23,6 @@ import com.toedter.spring.hateoas.jsonapi.examples.RootController;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.hateoas.EntityModel;
@@ -78,9 +77,9 @@ public class DirectorController {
     Link selfLink = linkTo(DirectorController.class)
       .slash(
         "directors?page[number]=" +
-        pagedResult.getNumber() +
-        "&page[size]=" +
-        pagedResult.getSize()
+          pagedResult.getNumber() +
+          "&page[size]=" +
+          pagedResult.getSize()
       )
       .withSelfRel();
 

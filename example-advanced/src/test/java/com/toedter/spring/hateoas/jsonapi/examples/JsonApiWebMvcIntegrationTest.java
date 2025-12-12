@@ -67,13 +67,30 @@ public class JsonApiWebMvcIntegrationTest {
 
     assertThat(result).hasStatusOk();
     assertThat(result).bodyJson().extractingPath("$.jsonapi").isNotNull();
-    assertThat(result).bodyJson().extractingPath("$.jsonapi.version").isEqualTo("1.1");
+    assertThat(result)
+      .bodyJson()
+      .extractingPath("$.jsonapi.version")
+      .isEqualTo("1.1");
     assertThat(result).bodyJson().extractingPath("$.data.id").isEqualTo("1");
-    assertThat(result).bodyJson().extractingPath("$.data.type").isEqualTo("movies");
-    assertThat(result).bodyJson().extractingPath("$.data.attributes.title").isEqualTo("Test Movie");
-    assertThat(result).bodyJson().extractingPath("$.data.attributes.year").isEqualTo(2020);
-    assertThat(result).bodyJson().extractingPath("$.data.attributes.rating").isEqualTo(9.3);
-    assertThat(result).bodyJson().extractingPath("$.links.self").isEqualTo("http://localhost/api/movies/1");
+    assertThat(result)
+      .bodyJson()
+      .extractingPath("$.data.type")
+      .isEqualTo("movies");
+    assertThat(result)
+      .bodyJson()
+      .extractingPath("$.data.attributes.title")
+      .isEqualTo("Test Movie");
+    assertThat(result)
+      .bodyJson()
+      .extractingPath("$.data.attributes.year")
+      .isEqualTo(2020);
+    assertThat(result)
+      .bodyJson()
+      .extractingPath("$.data.attributes.rating")
+      .isEqualTo(9.3);
+    assertThat(result)
+      .bodyJson()
+      .extractingPath("$.links.self")
+      .isEqualTo("http://localhost/api/movies/1");
   }
 }
-
