@@ -1,28 +1,27 @@
 plugins {
-    id 'org.springframework.boot' version '3.5.8'
+    id 'org.springframework.boot' version '4.0.0'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'io.freefair.lombok' version '9.1.0'
     id 'java'
 }
 
 group = 'com.toedter'
-version = '2.0.0'
+version = '3.0.0'
 
 repositories {
     mavenCentral()
+    maven { url = 'https://central.sonatype.com/repository/maven-snapshots/' }
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-rest'
-    implementation 'com.toedter:spring-hateoas-jsonapi:2.2.0'
+    implementation 'com.toedter:spring-hateoas-jsonapi:3.0.1-SNAPSHOT'
 
     implementation project(':example-model')
 
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-    }
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
 
     runtimeOnly 'org.hsqldb:hsqldb'
 }
@@ -32,7 +31,7 @@ test {
 }
 
 bootJar {
-    archiveBaseName = "spring-hateoas-jsonapi-example-basic"
+    archiveBaseName = "spring-hateoas-jsonapi-example-data-rest"
 }
 
 java {

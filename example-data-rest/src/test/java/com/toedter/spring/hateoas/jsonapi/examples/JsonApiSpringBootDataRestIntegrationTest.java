@@ -1,0 +1,157 @@
+/*
+ * Copyright 2021 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.toedter.spring.hateoas.jsonapi.examples;
+
+import com.toedter.spring.hateoas.jsonapi.MediaTypes;
+import com.toedter.spring.hateoas.jsonapi.examples.movie.Movie;
+import com.toedter.spring.hateoas.jsonapi.examples.movie.MovieRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.test.web.servlet.client.RestTestClient;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+/**
+ * @author Kai Toedter
+ */
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureRestTestClient
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@DisplayName("Spring Boot Integration Test with RestTestClient")
+class JsonApiSpringBootDataRestIntegrationTest {
+
+  @LocalServerPort
+  private int randomPort;
+
+  @Autowired
+  private RestTestClient restClient;
+
+  @Autowired
+  private MovieRepository movieRepository;
+
+  @BeforeEach
+  void beforeEach() {
+  }
+
+  @Test
+  void should_get_single_movie() {
+    Movie movie = new Movie("12345", "Test Movie", 2020, 9.3, 17, null);
+    final Movie savedMovie = movieRepository.save(movie);
+
+
+    String responseBody = restClient.get()
+            .uri("/api/movies/" + savedMovie.getId() + "?fields[movies]=title,year,rating,directors")
+            .accept(MediaTypes.JSON_API)
+            .exchange()
+            .returnResult(String.class)
+            .getResponseBody();
+
+
+    String expectedResult = """
+      {
+        "data": {
+          "id": "%s",
+          "type": "movies",
+          "attributes": {
+            "title": "Test Movie",
+            "year": 2020,
+            "imdbId": "12345",
+            "rating": 9.3,
+            "rank": 17
+          }
+        },
+        "links": {
+          "self": "http://localhost:%d/api/movies/%s"
+        }
+      }
+      """.formatted(savedMovie.getId(), this.randomPort, savedMovie.getId());
+
+    JsonMapper jsonMapper = JsonMapper.builder().build();
+    JsonNode expectedJsonNode = jsonMapper.readValue(expectedResult, JsonNode.class);
+    JsonNode actualJsonNode = jsonMapper.readValue(responseBody, JsonNode.class);
+    assertThat(actualJsonNode).isEqualTo(expectedJsonNode);
+  }
+
+  @Test
+  void should_create_single_movie() {
+
+    String movieJson = """
+      {
+        "data": {
+          "type": "movies",
+          "attributes": {
+            "title": "Test Movie",
+            "year": 2021,
+            "imdbId": "imdb",
+            "rating": 6.5,
+            "rank": 5
+          }
+        }
+      }
+      """;
+
+    var result = restClient.post()
+      .uri("/api/movies")
+      .contentType(MediaTypes.JSON_API)
+      .accept(MediaTypes.JSON_API)
+      .body(movieJson)
+      .exchange();
+
+    String location = result.expectStatus().isCreated()
+      .returnResult(String.class)
+      .getResponseHeaders()
+      .getLocation()
+      .toString();
+    String id = location.substring(location.lastIndexOf("/") + 1);
+    String responseBody = result.returnResult(String.class).getResponseBody();
+
+    System.out.println(responseBody);
+    String expectedResult = """
+      {
+        "data": {
+          "id": "%s",
+          "type": "movies",
+          "attributes": {
+            "title": "Test Movie",
+            "year": 2021,
+            "imdbId": "imdb",
+            "rating": 6.5,
+            "rank": 5
+          }
+        },
+        "links": {
+          "self": "http://localhost:%d/api/movies/%s",
+          "movie": "http://localhost:%d/api/movies/%s"
+        }
+      }
+      """.formatted(id, this.randomPort, id, this.randomPort, id);
+
+    JsonMapper jsonMapper = JsonMapper.builder().build();
+    JsonNode expectedJsonNode = jsonMapper.readValue(expectedResult, JsonNode.class);
+    JsonNode actualJsonNode = jsonMapper.readValue(responseBody, JsonNode.class);
+    assertThat(actualJsonNode).isEqualTo(expectedJsonNode);
+  }
+}
