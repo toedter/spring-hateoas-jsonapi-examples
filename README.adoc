@@ -25,10 +25,15 @@ This adds a test to the example-advanced that produces an OpenAPI v3 specificati
 You can create the spec running `../gradlew openapi3`. You find the generated spec at
 `build/api-spec/openapi3.yaml`
 
+NOTE: This example is currently **not working with Spring Boot 4**. We have to wait for a new version of `com.epages:restdocs-api-spec-mockmvc` that supports Spring Boot 4. See https://github.com/ePages-de/restdocs-api-spec/issues/289
+
+=== example-data-rest
+This example demonstrates Spring Data REST integration with JSON:API.
+
 == Running the Examples
 
 * Make sure Java 17 or later JDK is installed
-* Clone this Git repository and cd into `spring-hateoas-jsonapi`
+* Clone this Git repository and cd into `spring-hateoas-jsonapi-examples`
 * cd to the one of the example directories
 * Invoke `../gradlew bootrun` (`..\gradlew` on Windows)
 * Open http://localhost:8080/api/movies
