@@ -22,7 +22,7 @@ dependencies {
     // JMolecules for DDD value objects and identifiers
     implementation 'org.jmolecules:jmolecules-ddd:2.0.1'
     implementation 'org.jmolecules.integrations:jmolecules-jackson3:0.33.0'
-    implementation 'org.jmolecules.integrations:jmolecules-jpa:0.33.0'
+    implementation 'org.jmolecules.integrations:jmolecules-jpa:1.6.0'
 
     // jModulith for modular architecture
     implementation 'org.springframework.modulith:spring-modulith-api:1.4.6'
