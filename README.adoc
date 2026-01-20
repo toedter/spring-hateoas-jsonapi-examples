@@ -20,15 +20,18 @@ No JSON:API specific features are used, but the resulting JSON is rendered as JS
 === example-advanced
 Advanced usage of JSON:API specific features like relationships, included resources and sparse fieldsets.
 
+=== example-data-rest
+This example demonstrates Spring Data REST integration with JSON:API.
+
+=== example-jmolecules
+This example demonstrates JMolecules Identifier and ValueObject integration.
+
 === example-restdocs-openapi
 This adds a test to the example-advanced that produces an OpenAPI v3 specification.
 You can create the spec running `../gradlew openapi3`. You find the generated spec at
 `build/api-spec/openapi3.yaml`
 
 NOTE: This example is currently **not working with Spring Boot 4**. We have to wait for a new version of `com.epages:restdocs-api-spec-mockmvc` that supports Spring Boot 4. See https://github.com/ePages-de/restdocs-api-spec/issues/289
-
-=== example-data-rest
-This example demonstrates Spring Data REST integration with JSON:API.
 
 == Running the Examples
 

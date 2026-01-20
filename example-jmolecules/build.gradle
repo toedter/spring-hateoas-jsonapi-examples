@@ -1,0 +1,51 @@
+plugins {
+    id 'org.springframework.boot' version '4.0.1'
+    id 'io.spring.dependency-management' version '1.1.7'
+    id 'io.freefair.lombok' version '9.2.0'
+    id 'java'
+}
+
+group = 'com.toedter'
+version = '3.0.0'
+
+repositories {
+    mavenCentral()
+    maven { url = 'https://central.sonatype.com/repository/maven-snapshots/' }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+    implementation 'com.toedter:spring-hateoas-jsonapi:3.0.2-SNAPSHOT'
+
+    // JMolecules for DDD value objects and identifiers
+    implementation 'org.jmolecules:jmolecules-ddd:2.0.1'
+    implementation 'org.jmolecules.integrations:jmolecules-jackson3:0.33.0'
+    implementation 'org.jmolecules.integrations:jmolecules-jpa:0.33.0'
+
+    // jModulith for modular architecture
+    implementation 'org.springframework.modulith:spring-modulith-api:1.3.1'
+    runtimeOnly 'org.springframework.modulith:spring-modulith-runtime:1.3.1'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    testImplementation 'org.springframework.modulith:spring-modulith-starter-test:1.3.1'
+
+    runtimeOnly 'org.hsqldb:hsqldb'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+bootJar {
+    archiveBaseName = "spring-hateoas-jsonapi-example-jmodulith"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}

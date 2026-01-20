@@ -24,7 +24,7 @@ dependencyManagement {
 
 dependencies {
     implementation 'org.springframework.data:spring-data-jpa'
-    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'tools.jackson.core:jackson-databind'
     implementation 'jakarta.persistence:jakarta.persistence-api'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api'

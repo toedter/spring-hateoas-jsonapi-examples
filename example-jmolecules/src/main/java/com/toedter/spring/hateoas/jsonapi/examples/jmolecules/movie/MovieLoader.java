@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-package com.toedter.spring.hateoas.jsonapi.examples.movie;
+package com.toedter.spring.hateoas.jsonapi.examples.jmolecules.movie;
 
-import com.toedter.spring.hateoas.jsonapi.examples.director.Director;
-import com.toedter.spring.hateoas.jsonapi.examples.director.DirectorRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,8 +32,7 @@ public class MovieLoader {
 
   @Autowired
   public MovieLoader init(
-    MovieRepository movieRepository,
-    DirectorRepository directorRepository
+    MovieRepository movieRepository
   ) {
     ObjectMapper mapper = new ObjectMapper();
 
@@ -51,20 +48,6 @@ public class MovieLoader {
     for (JsonNode movieNode : movies) {
       Movie movie = createMovie(rating++, movieNode);
       movieRepository.save(movie);
-
-      String directors = movieNode.get("Director").asString();
-      String[] directorList = directors.split(",");
-
-      for (String directorName : directorList) {
-        Director director = directorRepository.findByName(directorName.trim());
-        if (director == null) {
-          director = new Director(directorName.trim());
-        }
-        director.addMovie(movie);
-        directorRepository.save(director);
-        movie.addDirector(director);
-        movieRepository.save(movie);
-      }
     }
     return this;
   }
@@ -73,11 +56,11 @@ public class MovieLoader {
     String title = rootNode.get("Title").asString();
     String imdbId = rootNode.get("imdbID").asString();
 
-    long year = rootNode.get("Year").asLong();
+    int year = rootNode.get("Year").asInt();
     double imdbRating = rootNode.get("imdbRating").asDouble();
 
     String movieImage = "/static/movie-data/thumbs/" + imdbId + ".jpg";
 
-    return new Movie(imdbId, title, year, imdbRating, rank, movieImage);
+    return new Movie(MovieTitle.of(title), year, ImdbId.of(imdbId), Rating.of(imdbRating), rank);
   }
 }
