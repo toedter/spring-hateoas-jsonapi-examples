@@ -29,9 +29,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * Spring Boot application demonstrating JModulith concepts with JSON:API.
  * <p>
  * This example showcases:
- * - Value object identifiers (MovieId, DirectorId, ImdbId, Rating)
- * - Aggregate roots (Movie, Director)
- * - Modular architecture (catalog and person modules)
+ * - Value object identifiers (MovieId, ImdbId, Rating)
+ * - Aggregate roots (Movie)
  * - JSON:API integration with JMolecules annotations
  */
 @SpringBootApplication
