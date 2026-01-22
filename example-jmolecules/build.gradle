@@ -26,10 +26,10 @@ dependencies {
 
     // jModulith for modular architecture
     implementation 'org.springframework.modulith:spring-modulith-api:2.0.1'
-    runtimeOnly 'org.springframework.modulith:spring-modulith-runtime:1.4.6'
+    runtimeOnly 'org.springframework.modulith:spring-modulith-runtime:2.0.1'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
-    testImplementation 'org.springframework.modulith:spring-modulith-starter-test:1.4.6'
+    testImplementation 'org.springframework.modulith:spring-modulith-starter-test:2.0.1'
 
     runtimeOnly 'org.hsqldb:hsqldb'
 }
