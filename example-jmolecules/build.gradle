@@ -17,7 +17,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
-    implementation 'com.toedter:spring-hateoas-jsonapi:3.0.2-SNAPSHOT'
+    implementation 'com.toedter:spring-hateoas-jsonapi:3.1.0'
 
     // JMolecules for DDD value objects and identifiers
     implementation 'org.jmolecules:jmolecules-ddd:2.0.1'
