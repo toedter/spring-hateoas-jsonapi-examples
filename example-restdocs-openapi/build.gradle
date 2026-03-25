@@ -1,3 +1,12 @@
+
+buildscript {
+    configurations.all {
+        resolutionStrategy {
+            force("org.springframework.boot:spring-boot-jackson2:4.0.4")
+        }
+    }
+}
+
 plugins {
     id 'org.springframework.boot' version '4.0.4'
     id 'io.spring.dependency-management' version '1.1.7'
@@ -24,7 +33,7 @@ dependencies {
     implementation project(':example-model')
     implementation project(':example-advanced')
 
-    testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.20.0'
+    testImplementation 'com.epages:restdocs-api-spec:0.20.0'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc:4.0.0'
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
@@ -52,9 +61,9 @@ openapi3 {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }

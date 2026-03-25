@@ -1,9 +1,10 @@
 package com.toedter.spring.hateoas.jsonapi.examples;
 
-import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
+
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static com.toedter.spring.hateoas.jsonapi.MediaTypes.JSON_API_VALUE;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.patch;
